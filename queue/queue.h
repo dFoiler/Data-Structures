@@ -12,7 +12,7 @@ class Queue
 		~Queue();
 		void enqueue(const T& in);
 		T dequeue();
-		T top();
+		T& top();
 	
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const Queue<S>&);
