@@ -11,13 +11,13 @@ class Stack
 	public:
 		Stack();					// Construct stack
 		~Stack();
-		bool push(T inData);				// Add element to top of stack
+		bool push(const T& inData);			// Add element to top of stack
 		T pop();					// Return element at top of stack and remove from top
-		T top();					// Return element at top of stack
+		T& top();					// Return element at top of stack
 		bool empty();
 
 	template <typename S>
-	friend std::ostream& operator<< (std::ostream&, Stack<S>&);
+	friend std::ostream& operator<< (std::ostream&, const Stack<S>&);
 };
 
 #endif 		//_Stack_H_

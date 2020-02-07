@@ -4,7 +4,7 @@ template <typename T>
 struct Queue<T>::Node
 {
 	T data;
-	Node* fwd;
+	Node *fwd;
 	
 	inline Node() : data(0x0), fwd(0x0) {}
 	inline Node(T data, Node* fwd) : data(data), fwd(fwd) {}
@@ -55,7 +55,7 @@ T Queue<T>::dequeue()
 template <typename T>
 T Queue<T>::top()
 {
-	return this->beg->data;
+	return this->end->data;
 }
 
 template <typename T>

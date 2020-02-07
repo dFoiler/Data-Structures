@@ -1,8 +1,9 @@
-#include <stdio.h>
 #include <iostream>
 #include "stack.h"
-#include "disc.h"
 
+/**
+ * Fairly standard linked list node
+ */
 template <typename T>
 struct Stack<T>::Node
 {
@@ -44,7 +45,7 @@ Stack<T>::~Stack()
  * @return Success
  */
 template <typename T>
-bool Stack<T>::push(T data)
+bool Stack<T>::push(const T& data)
 {
 	// Set pTop to a node which had the data and points to pTop
 	this->pTop = new Node(data, this->pTop);
@@ -57,6 +58,9 @@ bool Stack<T>::push(T data)
 template <typename T>
 T Stack<T>::pop()
 {
+	// Does the stack exist?
+	if(!this->pTop)
+		return NULL;
 	// Get top node
 	Node* oldTop = this->pTop;
 	// Set new top node
@@ -71,7 +75,7 @@ T Stack<T>::pop()
  * @return The item pointed by pTop
  */
 template <typename T>
-T Stack<T>::top()
+T& Stack<T>::top()
 {
 	return pTop->data;
 }
@@ -93,11 +97,11 @@ bool Stack<T>::empty()
  * @return Updated output stream
  */
 template <typename T>
-std::ostream& operator<< (std::ostream& o, Stack<T>& s)
+std::ostream& operator<< (std::ostream& o, const Stack<T>& s)
 {
 	// Loop through all nodes
 	for(typename Stack<T>::Node* p = s.pTop; p; p = p->next)
 		// Print data at each node
 		o << p->data << '\t';
-	return o << std::endl;
+	return o;
 }
