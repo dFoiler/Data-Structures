@@ -16,12 +16,12 @@ int main()
 	}
 	for(int i = 0; i < 10; ++i)
 	{
-		q.enqueue(i, 10-i);
+		q.push(i, 10-i);
 		std::cout << "Current: " << q << std::endl;
 	}
 	for(int i = 0; i < 20; ++i)
 	{
-		std::cout << "Dequeue: " << q.dequeue() << std::endl;
+		std::cout << "Dequeue: " << q.pop() << std::endl;
 		std::cout << "Current: " << q << std::endl;
 	}
 }

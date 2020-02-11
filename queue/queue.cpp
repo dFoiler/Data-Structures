@@ -60,6 +60,16 @@ void Queue<T>::enqueue(const T& data)
 }
 
 /**
+ * Equivalent to enqueue
+ * @param data Data to enqueue
+ */
+template <typename T>
+void Queue<T>::push(const T& data)
+{
+	this->enqueue(data);
+}
+
+/**
  * Dequeues data from the queue
  * @return Value of data stored
  */
@@ -76,6 +86,16 @@ T Queue<T>::dequeue()
 	// We don't need this anymore
 	delete oldBeg;
 	return r;
+}
+
+/**
+ * Equivalent to dequeue
+ * @return Value of data stored
+ */
+template <typename T>
+T Queue<T>::pop()
+{
+	return this->dequeue();
 }
 
 /**

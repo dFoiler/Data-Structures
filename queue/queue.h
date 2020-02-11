@@ -11,7 +11,9 @@ class Queue
 		Queue();
 		~Queue();
 		void enqueue(const T& in);
+		void push(const T& in);
 		T dequeue();
+		T pop();
 		T& top();
 	
 	template <typename S>

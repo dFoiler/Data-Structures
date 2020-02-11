@@ -44,6 +44,7 @@ PQueue<T>::~PQueue()
  * Enqueues data onto the queue
  * Inserts by (min) priority at the end, in O(n) time
  * @param data Data to enqueue
+ * @param priority Priority of input data
  */
 template <typename T>
 void PQueue<T>::enqueue(const T& data, const int priority)
@@ -76,6 +77,17 @@ void PQueue<T>::enqueue(const T& data, const int priority)
 }
 
 /**
+ * Equivalent to enqueue
+ * @param data Data to enqueue
+ * @param priority Priority of input data
+ */
+template <typename T>
+inline void PQueue<T>::push(const T& data, const int priority)
+{
+	this->enqueue(data, priority);
+}
+
+/**
  * Dequeues data from the queue
  * @return Value of data stored
  */
@@ -92,6 +104,16 @@ T PQueue<T>::dequeue()
 	// We don't need this anymore
 	delete oldBeg;
 	return r;
+}
+
+/**
+ * Equivalent to dequeue
+ * @return Value of data stored
+ */
+template <typename T>
+inline T PQueue<T>::pop()
+{
+	return this->dequeue();
 }
 
 /**

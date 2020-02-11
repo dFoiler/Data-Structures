@@ -11,7 +11,9 @@ class PQueue
 		PQueue();
 		~PQueue();
 		void enqueue(const T& in, const int priority);
+		inline void push(const T& in, const int priority);
 		T dequeue();
+		inline T pop();
 		T& top();
 	
 	template <typename S>
