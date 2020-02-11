@@ -123,7 +123,7 @@ inline T PQueue<T>::pop()
 template <typename T>
 T& PQueue<T>::top()
 {
-	return this->end->data;
+	return this->beg->data;
 }
 
 /**

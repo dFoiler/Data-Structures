@@ -105,7 +105,7 @@ T Queue<T>::pop()
 template <typename T>
 T& Queue<T>::top()
 {
-	return this->end->data;
+	return this->beg->data;
 }
 
 /**
