@@ -1,5 +1,4 @@
 #include <iostream>
-#include "stack.h"
 
 /**
  * Fairly standard linked list node

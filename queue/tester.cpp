@@ -1,12 +1,12 @@
 #include <iostream>
-#include "priorityqueue.h"
+#include "queue.h"
 
 int main()
 {
-	PQueue<int> q;
+	Queue<int> q;
 	for(int i = 0; i < 10; ++i)
 	{
-		q.enqueue(i, i);
+		q.enqueue(i);
 		std::cout << "Current: " << q << std::endl;
 	}
 	for(int i = 0; i < 5; ++i)
@@ -16,7 +16,7 @@ int main()
 	}
 	for(int i = 0; i < 10; ++i)
 	{
-		q.push(i, 10-i);
+		q.push(10-i);
 		std::cout << "Current: " << q << std::endl;
 	}
 	std::cout << "Setting top to 123" << std::endl;

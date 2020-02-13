@@ -1,5 +1,3 @@
-#include "priorityqueue.h"
-
 /**
  * Standard linked list node
  */

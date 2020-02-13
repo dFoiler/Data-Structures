@@ -19,3 +19,5 @@ class PQueue
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const PQueue<S>&);
 };
+
+#include "priorityqueue.cpp"

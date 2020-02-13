@@ -19,3 +19,5 @@ class Queue
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const Queue<S>&);
 };
+
+#include "queue.cpp"

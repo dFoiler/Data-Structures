@@ -20,4 +20,6 @@ class Stack
 	friend std::ostream& operator<< (std::ostream&, const Stack<S>&);
 };
 
+#include "stack.cpp"
+
 #endif 		//_Stack_H_
