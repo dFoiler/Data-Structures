@@ -53,42 +53,95 @@ BinTree<K,D>::~BinTree()
 }
 
 /**
+ * Returns the node closest to the given key
+ * @param key Key to search through the tree with
+ * @return Pointer to node containing the key
+ */
+template <typename K, typename D>
+typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key)
+{
+	// Does root exist?
+	if(!root)
+		return 0x0; // You made me do this
+	// Now compare to root
+	if(key < root->key) // To the left
+	{
+		// Is there a child there?
+		if(!root->lft)
+			// Good enough
+			return root;
+		// Recursive call
+		return this->clsNode(root->lft, key);
+	}
+	if(key > root->key) // To the right
+	{
+		// Is there a child there?
+		if(!root->rgt)
+			// Good enough
+			return root;
+		// Recursive call
+		return this->clsNode(root->rgt, key);
+	}
+	// Else this->root == key
+	return root;
+}
+
+/**
+ * Helper function, finding the successor of a node
+ * Returns null if the given node is maximal
+ * @param node Node to find the successor of
+ * @return Null if node is maximal, otherwise successor
+ */
+template <typename K, typename D>
+typename BinTree<K,D>::Node* BinTree<K,D>::sucNode(Node* node)
+{
+	Node* next(node);
+	// Is there space to the right?
+	if(node->rgt)
+	{
+		// Move one right and all the way left
+		next = node->rgt;
+		while(next->lft)
+			next = next->lft;
+		return next;
+	}
+	// Else we go up the tree until the key is bigger than the given
+	while(next && next->key <= node->key)
+		next = next->par;
+	if(!next) // This was the maximum
+		return 0x0;
+	// Else we have a valid parent node bigger
+	return next;
+}
+
+/**
  * Inserts into the binary tree
  * @param key Key of the inserted node
  * @param data Data to be stored in the inserted node
  * @return Success
  */
 template <typename K, typename D>
-bool BinTree<K,D>::insert(const K key, const D& data)
+bool BinTree<K,D>::ins(const K key, const D& data)
 {
-	// Is there anything there?
-	if(!this->root)
+	Node* par = this->clsNode(this->root, key);
+	// Was the tree empty?
+	if(!par)
 	{
 		this->root = new Node(key, data, 0x0);
 		return true;
 	}
-	// Now compare to root
-	if(key < this->root->key) // To the left
+	// Now compare with parent
+	if(key < par->key) // To the left
 	{
-		// Is there a child there?
-		if(this->root->lft)
-			// Recursive call
-			return BinTree<K,D>(this->root->lft).insert(key, data);
-		// Make the child
-		this->root->lft = new Node(key, data, this->root);
+		par->lft = new Node(key, data, par);
 		return true;
 	}
-	if(key > this->root->key) // To the right
+	if(key > par->key) // To the right
 	{
-		// Is there a child there?
-		if(this->root->rgt)
-			// Recursive call
-			return BinTree<K,D>(this->root->rgt).insert(key, data);
-		// Make the child
-		this->root->rgt = new Node(key, data, this->root);
+		par->rgt = new Node(key, data, par);
 		return true;
 	}
-	// Else key == this->root->key, so we can't add the key in!
+	// Else the key has already been used
 	return false;
 }
 
@@ -101,26 +154,15 @@ bool BinTree<K,D>::insert(const K key, const D& data)
 template <typename K, typename D>
 D& BinTree<K,D>::operator[](const K key)
 {
+	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
-	if(!this->root)
+	if(!ret)
 		throw std::range_error("tree is empty");
-	// Now compare with root
-	if(key < this->root->key) // To the left
-	{
-		// Recursive call if possible
-		if(this->root->rgt)
-			return BinTree<K,D>(this->root->rgt)[key];
-	}
-	if(key > this->root->key) // To the right
-	{
-		// Recursive call if possible
-		if(this->root->lft)
-			return BinTree<K,D>(this->root->lft)[key];
-	}
-	if(key == this->root->key) // Got it!
-		return this->root->data;
+	// Now compare with ret
+	if(ret->key == key)
+		return ret->data;
 	// Else we failed to find the key no way we found the key
-	throw std::range_error("invalid index");
+	throw std::range_error("invalid key");
 }
 
 /**
@@ -132,6 +174,15 @@ template <typename K, typename D>
 inline D& BinTree<K,D>::get(const K key)
 {
 	return (*this)[key];
+}
+
+template <typename K, typename D>
+inline K BinTree<K,D>::suc(const K key)
+{
+	Node* ret = this->sucNode(this->clsNode(this->root, key));
+	if(!ret)
+		throw std::range_error("invalid key");
+	return ret->key;
 }
 
 /**
