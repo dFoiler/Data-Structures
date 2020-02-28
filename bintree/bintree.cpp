@@ -1,3 +1,7 @@
+/**
+ * Standard binary search tree node
+ * Includes left, right, and parent
+ */
 template <typename K, typename D>
 struct BinTree<K,D>::Node
 {
@@ -8,6 +12,10 @@ struct BinTree<K,D>::Node
 	inline Node(K key, D data, Node* par) : key(key), data(data), lft(0x0), rgt(0x0), par(par) {}
 };
 
+/**
+ * Standard default constructor
+ * Sets root to null and makes the object nonrecursive
+ */
 template <typename K, typename D>
 inline BinTree<K,D>::BinTree()
 {
@@ -15,6 +23,10 @@ inline BinTree<K,D>::BinTree()
 	this->recursive = false;
 }
 
+/**
+ * Initializes a tree with given root, declared as recursive
+ * @param root The root of this tree
+ */
 template <typename K, typename D>
 inline BinTree<K,D>::BinTree(Node* root)
 {
@@ -23,6 +35,10 @@ inline BinTree<K,D>::BinTree(Node* root)
 	this->recursive = true;
 }
 
+/**
+ * Typical deconstructor
+ * Makes left and right child trees and recursively deletes
+ */
 template <typename K, typename D>
 BinTree<K,D>::~BinTree()
 {
@@ -36,6 +52,12 @@ BinTree<K,D>::~BinTree()
 	delete this->root;
 }
 
+/**
+ * Inserts into the binary tree
+ * @param key Key of the inserted node
+ * @param data Data to be stored in the inserted node
+ * @return Success
+ */
 template <typename K, typename D>
 bool BinTree<K,D>::insert(const K key, const D& data)
 {
@@ -70,40 +92,54 @@ bool BinTree<K,D>::insert(const K key, const D& data)
 	return false;
 }
 
+/**
+ * Array-like access by reference
+ * Throws an error if the tree is empty or for invalid index
+ * @param key Key of data to look for
+ * @return Data of the given key
+ */
 template <typename K, typename D>
 D& BinTree<K,D>::operator[](const K key)
 {
 	// Is there anything there?
 	if(!this->root)
-	{
-		std::cerr << "Empty tree" << std::endl;
-		std::exit(-1);
-	}
+		throw std::range_error("tree is empty");
 	// Now compare with root
 	if(key < this->root->key) // To the left
 	{
-		if(!this->root->rgt) // Nothing's there
-			return this->root->data; // Good enough
-		// Recursive call
-		return BinTree<K,D>(this->root->rgt)[key];
+		// Recursive call if possible
+		if(this->root->rgt)
+			return BinTree<K,D>(this->root->rgt)[key];
 	}
 	if(key > this->root->key) // To the right
 	{
-		if(!this->root->lft) // Nothing's there
-			return this->root->data; // Good enough
-		// Recursive call
-		return BinTree<K,D>(this->root->lft)[key];
+		// Recursive call if possible
+		if(this->root->lft)
+			return BinTree<K,D>(this->root->lft)[key];
 	}
-	// Finally, we have found our key
-	return this->root->data;
+	if(key == this->root->key) // Got it!
+		return this->root->data;
+	// Else we failed to find the key no way we found the key
+	throw std::range_error("invalid index");
 }
 
+/**
+ * Identical to array access
+ * @param key Key of data to look for
+ * @return Data of the given key
+ */
 template <typename K, typename D>
 inline D& BinTree<K,D>::get(const K key)
 {
 	return (*this)[key];
 }
 
+/**
+ * Output operator for bintree
+ * Uses nested parantheses to denote parent-child relationships
+ * @param o Output stream to attach to
+ * @param bt Binary tree to print
+ */
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
 {
@@ -113,6 +149,5 @@ std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
 	o << ' ';
 	if(bt.root->rgt)
 		o << BinTree<K,D>(bt.root->rgt);
-	o << ')';
-	return o;
+	return o << ')';
 }

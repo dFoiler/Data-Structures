@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstdlib>
+#include <stdexcept>
 
 template <typename K, typename D>
 class BinTree
