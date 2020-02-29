@@ -256,6 +256,18 @@ D BinTree<K,D>::del(const K key)
 }
 
 /**
+ * Checks if the tree contains given key
+ * @param key Key to walk with
+ * @return True iff key is present in tree
+ */
+template <typename K, typename D>
+inline bool BinTree<K,D>::contains(const K key)
+{
+	Node* cls = this->clsNode(this->root, key);
+	return cls && cls->key == key;
+}
+
+/**
  * Array-like access by reference
  * Throws an error if the tree is empty or for invalid index
  * @param key Key of data to look for
@@ -338,6 +350,27 @@ K BinTree<K,D>::min()
 	while(r->lft)
 		r = r->lft;
 	return r->key;
+}
+
+/**
+ * Outputs the tree to an array of data sorted by key
+ * Returns null on empty tree
+ * @retrun Array of data sorted by key
+ */
+template <typename K, typename D>
+D* BinTree<K,D>::toArray()
+{
+	if(!this->root)
+		return 0x0;
+	// Now fill in the array
+	D* r = new D[this->size()];
+	int curIndex = -1;
+	// Get minimum node and successor down
+	for(Node* cur = this->clsNode(this->root, this->min());
+		cur; cur = this->sucNode(cur))
+		// Set and iterate
+		r[++curIndex] = cur->data;
+	return r;
 }
 
 /**
