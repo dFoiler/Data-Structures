@@ -14,12 +14,17 @@ class BinTree
 	public:
 		BinTree();
 		~BinTree();
+		int size();
+		int depth();
+		int depth(const K key);
 		bool ins(const K key, const D& data);
+		D del(const K key);
 		D& operator[](const K key);
 		D& get(const K key);
 		K suc(const K key);
-		D del(const K key);
-	
+		K max();
+		K min();
+			
 	template <typename KK, typename DD>
 	friend std::ostream& operator<< (std::ostream&, const BinTree<KK,DD>&);
 };
