@@ -18,6 +18,7 @@ class BinTree
 		D& operator[](const K key);
 		D& get(const K key);
 		K suc(const K key);
+		D del(const K key);
 	
 	template <typename KK, typename DD>
 	friend std::ostream& operator<< (std::ostream&, const BinTree<KK,DD>&);

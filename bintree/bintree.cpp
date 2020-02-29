@@ -157,12 +157,12 @@ D& BinTree<K,D>::operator[](const K key)
 	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
 	if(!ret)
-		throw std::range_error("tree is empty");
+		throw std::range_error("[] received empty tree");
 	// Now compare with ret
 	if(ret->key == key)
 		return ret->data;
 	// Else we failed to find the key no way we found the key
-	throw std::range_error("invalid key");
+	throw std::range_error("[] received invalid key");
 }
 
 /**
@@ -176,13 +176,78 @@ inline D& BinTree<K,D>::get(const K key)
 	return (*this)[key];
 }
 
+/**
+ * Returns the successor node
+ * Throws an error if node is invalid or if node is max
+ * @param key Key to walk with
+ * @return Next key in the tree
+ */
 template <typename K, typename D>
 inline K BinTree<K,D>::suc(const K key)
 {
-	Node* ret = this->sucNode(this->clsNode(this->root, key));
+	// Get the needed node
+	Node* cls = this->clsNode(this->root, key);
+	if(cls->key != key)
+		throw std::range_error("suc recieved invalid key");
+	// Get the successor node
+	Node* ret = this->sucNode(cls);
 	if(!ret)
-		throw std::range_error("invalid key");
+		throw std::range_error("suc received maximal key");
 	return ret->key;
+}
+
+template <typename K, typename D>
+D BinTree<K,D>::del(const K key)
+{
+	// Get the node
+	Node* toDelete = this->clsNode(this->root, key);
+	if(toDelete->key != key)
+		throw std::range_error("del received invalid key");
+	D r(toDelete->data);
+	Node* toReplace = 0x0; // Assume no children
+	// toDelete has two children
+	if(toDelete->lft && toDelete->rgt)
+	{
+		// Replacement is successor; no left children
+		toReplace = this->sucNode(toDelete);
+		// Update replace relationships
+		if(toReplace->rgt)
+		{
+			toReplace->rgt->par = toReplace->par;
+			toReplace->par->lft = toReplace->rgt;
+		}
+		// These have to do with the right child of toDelete
+		if(toReplace->par != toDelete)
+		{
+			if(toReplace->rgt)
+				toReplace->rgt->par = toDelete->par;
+			toReplace->par->lft = 0x0;
+			toReplace->rgt = toDelete->rgt;
+			toDelete->rgt->par = toReplace;
+		}
+		// These always need to change
+		toReplace->par = toDelete->par;
+		toReplace->lft = toDelete->lft;
+		toDelete->lft->par = toReplace;
+	}
+	// toDelete has one child
+	else if(toDelete->lft || toDelete->rgt)
+	{
+		// Replacement is the child
+		toReplace = toDelete->lft ? toDelete->lft : toDelete->rgt;
+		// Update replace relationships
+		toReplace->par = toDelete->par;
+	}
+	// Change toDelete relationships
+	if(toDelete == this->root)
+		this->root = toReplace;
+	else if(toDelete == toDelete->par->lft)
+		toDelete->par->lft = toReplace;
+	else
+		toDelete->par->rgt = toReplace;
+	// Delete and exit
+	delete toDelete;
+	return r;
 }
 
 /**
@@ -193,11 +258,15 @@ inline K BinTree<K,D>::suc(const K key)
  */
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
-{
-	o << '(' << bt.root->data << '[' << bt.root->key << "] ";
+{	
+	if(!bt.root)
+		return o;
+	o << bt.root->data << '[' << bt.root->key << "]{";
+	if(bt.root->par) o << bt.root->par->key;
+	o << "} (";
 	if(bt.root->lft)
 		o << BinTree<K,D>(bt.root->lft);
-	o << ' ';
+	o << ") (";
 	if(bt.root->rgt)
 		o << BinTree<K,D>(bt.root->rgt);
 	return o << ')';
