@@ -6,10 +6,10 @@ template <typename K, typename D>
 struct BinTree<K,D>::Node
 {
 	K key; D data;
-	Node *lft, *rgt, *par;
+	Node *lft, *rht, *par;
 	
-	inline Node() : key(0x0), data(0x0), lft(0x0), rgt(0x0), par(0x0) {}
-	inline Node(K key, D data, Node* par) : key(key), data(data), lft(0x0), rgt(0x0), par(par) {}
+	inline Node() : key(0x0), data(0x0), lft(0x0), rht(0x0), par(0x0) {}
+	inline Node(K key, D data, Node* par) : key(key), data(data), lft(0x0), rht(0x0), par(par) {}
 };
 
 /**
@@ -31,7 +31,7 @@ template <typename K, typename D>
 inline BinTree<K,D>::BinTree(Node* root)
 {
 	this->root = root;
-	// These are private objects creted for recursion
+	// These are private objects created for recursion
 	this->recursive = true;
 }
 
@@ -46,7 +46,7 @@ BinTree<K,D>::~BinTree()
 	if(!this->root || this->recursive) // Don't delete temp objects
 		return;
 	// Create stack objects that will be recursively deleted automatically
-	BinTree rgt(this->root->rgt); rgt.recursive = false;
+	BinTree rht(this->root->rht); rht.recursive = false;
 	BinTree lft(this->root->lft); lft.recursive = false;
 	// Now delete the current pointer
 	delete this->root;
@@ -76,11 +76,11 @@ typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key)
 	if(key > root->key) // To the right
 	{
 		// Is there a child there?
-		if(!root->rgt)
+		if(!root->rht)
 			// Good enough
 			return root;
 		// Recursive call
-		return this->clsNode(root->rgt, key);
+		return this->clsNode(root->rht, key);
 	}
 	// Else this->root == key
 	return root;
@@ -97,10 +97,10 @@ typename BinTree<K,D>::Node* BinTree<K,D>::sucNode(Node* node)
 {
 	Node* next(node);
 	// Is there space to the right?
-	if(node->rgt)
+	if(node->rht)
 	{
 		// Move one right and all the way left
-		next = node->rgt;
+		next = node->rht;
 		while(next->lft)
 			next = next->lft;
 		return next;
@@ -126,7 +126,7 @@ int BinTree<K,D>::size()
 		return 0;
 	// Recursive call
 	return 1 + BinTree<K,D>(this->root->lft).size()
-		+ BinTree<K,D>(this->root->rgt).size();
+		+ BinTree<K,D>(this->root->rht).size();
 }
 
 /**
@@ -167,8 +167,8 @@ int BinTree<K,D>::depth()
 		return -1;
 	// Run recursive calls
 	int dLft = BinTree<K,D>(this->root->lft).depth();
-	int dRgt = BinTree<K,D>(this->root->rgt).depth();
-	return 1 + (dLft > dRgt ? dLft : dRgt);
+	int dRht = BinTree<K,D>(this->root->rht).depth();
+	return 1 + (dLft > dRht ? dLft : dRht);
 }
 
 /**
@@ -193,7 +193,7 @@ bool BinTree<K,D>::ins(const K key, const D& data)
 	else if(key < par->key) // To the left
 		par->lft = new Node(key, data, par);
 	else			// To the right
-		par->rgt = new Node(key, data, par);
+		par->rht = new Node(key, data, par);
 	return true;
 }
 
@@ -213,22 +213,22 @@ D BinTree<K,D>::del(const K key)
 	D r(toDelete->data);
 	Node* toReplace = 0x0; // Assume no children
 	// toDelete has two children
-	if(toDelete->lft && toDelete->rgt)
+	if(toDelete->lft && toDelete->rht)
 	{
 		// Replacement is successor; no left children
 		toReplace = this->sucNode(toDelete);
 		// Update replace relationships
-		if(toReplace->rgt) // Assume toReplace->par = toDelete
-			toReplace->rgt->par = toDelete->par;
+		if(toReplace->rht) // Assume toReplace->par = toDelete
+			toReplace->rht->par = toDelete->par;
 		// These concern rgt of toDelete or par of toReplace
 		if(toReplace->par != toDelete)
 		{
-			if(toReplace->rgt) // Fixing that
-				toReplace->rgt->par = toReplace->par;
+			if(toReplace->rht) // Fixing that
+				toReplace->rht->par = toReplace->par;
 			// No left children, so right child can sub in
-			toReplace->par->lft = toReplace->rgt;
-			toReplace->rgt = toDelete->rgt;
-			toDelete->rgt->par = toReplace;
+			toReplace->par->lft = toReplace->rht;
+			toReplace->rht = toDelete->rht;
+			toDelete->rht->par = toReplace;
 		}
 		// These always need to change
 		toReplace->par = toDelete->par;
@@ -236,10 +236,10 @@ D BinTree<K,D>::del(const K key)
 		toDelete->lft->par = toReplace;
 	}
 	// toDelete has one child
-	else if(toDelete->lft || toDelete->rgt)
+	else if(toDelete->lft || toDelete->rht)
 	{
 		// Replacement is the child
-		toReplace = toDelete->lft ? toDelete->lft : toDelete->rgt;
+		toReplace = toDelete->lft ? toDelete->lft : toDelete->rht;
 		// Update replace relationships
 		toReplace->par = toDelete->par;
 	}
@@ -249,7 +249,7 @@ D BinTree<K,D>::del(const K key)
 	else if(toDelete == toDelete->par->lft)
 		toDelete->par->lft = toReplace;
 	else
-		toDelete->par->rgt = toReplace;
+		toDelete->par->rht = toReplace;
 	// Delete and exit
 	delete toDelete;
 	return r;
@@ -330,8 +330,8 @@ K BinTree<K,D>::max()
 	if(!r)
 		throw std::range_error("max received empty tree");
 	// Keep going right until done
-	while(r->rgt)
-		r = r->rgt;
+	while(r->rht)
+		r = r->rht;
 	return r->key;
 }
 
@@ -390,6 +390,6 @@ std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
 	if(bt.root->par) o << bt.root->par->key;
 	o << "} (";
 	// Recursive calls to subtrees
-	o << BinTree<K,D>(bt.root->lft) << ") (" << BinTree<K,D>(bt.root->rgt);
+	o << BinTree<K,D>(bt.root->lft) << ") (" << BinTree<K,D>(bt.root->rht);
 	return o << ')';
 }
