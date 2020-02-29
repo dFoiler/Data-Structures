@@ -6,7 +6,7 @@ int main()
 	BinTree<int,char> bintree;
 	std::cout << "[BEGIN]" << std::endl;
 	int toAdd = 53;
-	int terms = 8;
+	int terms = 20;
 	for(int i = 0; i < terms; ++i)
 	{
 		std::cout << "Inserting [" << toAdd << "] : " << bintree.ins(toAdd,' ') << std::endl;

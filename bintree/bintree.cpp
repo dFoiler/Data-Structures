@@ -212,16 +212,14 @@ D BinTree<K,D>::del(const K key)
 		toReplace = this->sucNode(toDelete);
 		// Update replace relationships
 		if(toReplace->rgt)
-		{
 			toReplace->rgt->par = toReplace->par;
-			toReplace->par->lft = toReplace->rgt;
-		}
-		// These have to do with the right child of toDelete
+		// These concern rgt of toDelete or par of toReplace
 		if(toReplace->par != toDelete)
 		{
 			if(toReplace->rgt)
 				toReplace->rgt->par = toDelete->par;
-			toReplace->par->lft = 0x0;
+			// No left children, so right child can sub in
+			toReplace->par->lft = toReplace->rgt;
 			toReplace->rgt = toDelete->rgt;
 			toDelete->rgt->par = toReplace;
 		}
@@ -259,11 +257,14 @@ D BinTree<K,D>::del(const K key)
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
 {	
+	// Anti-segfault
 	if(!bt.root)
 		return o;
+	// Output data, key, and parent key in order
 	o << bt.root->data << '[' << bt.root->key << "]{";
 	if(bt.root->par) o << bt.root->par->key;
 	o << "} (";
+	// Recursive calls to subtrees
 	if(bt.root->lft)
 		o << BinTree<K,D>(bt.root->lft);
 	o << ") (";
