@@ -208,7 +208,7 @@ D BinTree<K,D>::del(const K key)
 {
 	// Get the node
 	Node* toDelete = this->clsNode(this->root, key);
-	if(toDelete->key != key)
+	if(!toDelete || toDelete->key != key)
 		throw std::range_error("del received invalid key");
 	D r(toDelete->data);
 	Node* toReplace = 0x0; // Assume no children

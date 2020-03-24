@@ -31,7 +31,7 @@ int main()
 		std::cout << ", " << arr[i];
 	std::cout << ']' << std::endl;
 	toAdd = 53 % 100;
-	for(int i = 0; i < terms; ++i)
+	for(int i = 0; i < terms+1; ++i)
 	{
 		std::cout << '\n' << std::endl;
 		std::cout << "Deleting [" << toAdd << "] : " << bintree.del(toAdd) << std::endl;
