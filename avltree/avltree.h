@@ -10,6 +10,10 @@ class AVLTree
 		AVLTree(Node* root);
 		Node* clsNode(Node* root, const K key);
 		Node* sucNode(Node* node);
+		Node* rotLft(Node* root);
+		Node* rotRht(Node* root);
+		long setHt(Node* nd);
+		void rebal(Node* bot);
 		bool recursive;
 	public:
 		AVLTree();

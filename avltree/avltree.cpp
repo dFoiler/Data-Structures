@@ -7,11 +7,11 @@ struct AVLTree<K,D>::Node
 {
 	K key; D data;
 	Node *lft, *rht, *par;
-	char factor;
+	long ht;
 	
-	inline Node() : key(0x0), data(0x0), lft(0x0), rht(0x0), par(0x0), factor(0) {}
+	inline Node() : key(0x0), data(0x0), lft(0x0), rht(0x0), par(0x0), ht(0) {}
 	inline Node(K key, D data, Node* par) : key(key), data(data),
-		lft(0x0), rht(0x0), par(par), factor(0) {}
+		lft(0x0), rht(0x0), par(par), ht(0) {}
 };
 
 /**
@@ -117,6 +117,147 @@ typename AVLTree<K,D>::Node* AVLTree<K,D>::sucNode(Node* node)
 }
 
 /**
+ * Rebalance helper; rotates the given node left
+ * @param root Node to rotate as root
+ * @return The node replacing root
+ */
+template <typename K, typename D>
+typename AVLTree<K,D>::Node* AVLTree<K,D>::rotLft(Node* root)
+{
+	Node* child = root->rht;
+	// Promote child
+	if(root->par)
+	{
+		if(root == root->par->lft)
+			root->par->lft = child;
+		else
+			root->par->rht = child;
+	}
+	else
+		this->root = child;
+	child->par = root->par;
+	root->par = child;
+	// Reorder the children
+	root->rht = child->lft;
+	if(root->rht)
+		root->rht->par = root;
+	child->lft = root;
+	// Update heights
+	this->setHt(root); // root is child of child
+	this->setHt(child);
+	// Return new root
+	return child;
+}
+
+/**
+ * Rebalance helper; rotates the given node right
+ * @param root Node to rotate as root
+ * @return The node replacing root
+ */
+template <typename K, typename D>
+typename AVLTree<K,D>::Node* AVLTree<K,D>::rotRht(Node* root)
+{
+	Node* child = root->lft;
+	// Promote child
+	if(root->par)
+	{
+		if(root == root->par->lft)
+			root->par->lft = child;
+		else
+			root->par->rht = child;
+	}
+	else
+		this->root = child;
+	child->par = root->par;
+	root->par = child;
+	// Reorder the children
+	root->lft = child->rht;
+	if(root->lft)
+		root->lft->par = root;
+	child->rht = root;
+	// Update heights
+	this->setHt(root); // root is child of child
+	this->setHt(child);
+	// Return new root
+	return child;
+}
+
+/**
+ * Rebalance helper; sets the height of the node
+ * Assumes height of lft and rht are accurate
+ * @return Height of the node
+ */
+template <typename K, typename D>
+long AVLTree<K,D>::setHt(Node* nd)
+{
+	nd->ht = 0;
+	// Has a left child
+	if(nd->lft)
+	{
+		// Is the rht larger?
+		if(nd->rht && nd->rht->ht > nd->lft->ht)
+			nd->ht = nd->rht->ht + 1;
+		else
+			nd->ht = nd->lft->ht + 1;
+	}
+	// Has only a right child
+	else if (nd->rht)
+		nd->ht = nd->rht->ht + 1;
+	// Return height
+	return nd->ht;
+}
+
+/**
+ * Rebalances the AVL tree, going up from bot
+ */
+template <typename K, typename D>
+void AVLTree<K,D>::rebal(Node* bot)
+{
+	// Work upwards
+	while(bot)
+	{
+		// Set the height correctly before continuing
+		this->setHt(bot);
+		long lftHt = bot->lft ? bot->lft->ht : -1;
+		long rhtHt = bot->rht ? bot->rht->ht : -1;
+		// Left-heavy?
+		if(lftHt - rhtHt > 1)
+		{
+			// Test if subree is left- or right-heavy
+			lftHt = bot->lft->lft ? bot->lft->lft->ht : -1;
+			rhtHt = bot->lft->rht ? bot->lft->rht->ht : -1;
+			// Left-heavy
+			if(lftHt > rhtHt)
+				bot = this->rotRht(bot);
+			// Right-heavy
+			else
+			{
+				this->rotLft(bot->lft);
+				bot = this->rotRht(bot);
+			}
+		}
+		// Right-heavy?
+		else if(rhtHt - lftHt > 1)
+		{
+			// Test if subtree is left- or right-heavy
+			lftHt = bot->rht->lft ? bot->rht->lft->ht : -1;
+			rhtHt = bot->rht->rht ? bot->rht->rht->ht : -1;
+			// Left-heavy
+			if(lftHt > rhtHt)
+			{
+				this->rotRht(bot->rht);
+				bot = this->rotLft(bot);
+			}
+			// Right-heavy
+			else
+				bot = this->rotLft(bot);
+		}
+		// Iterate
+		bot = bot->par;
+	}
+}
+
+/**
  * Computes and returns the size of the tree recursively
  * @return Number of nodes in the tree
  */
@@ -193,9 +334,15 @@ bool AVLTree<K,D>::ins(const K key, const D& data)
 	if(key == par->key)	// Key already in use
 		return false;
 	else if(key < par->key) // To the left
+	{
 		par->lft = new Node(key, data, par);
+		this->rebal(par->lft);
+	}
 	else			// To the right
+	{
 		par->rht = new Node(key, data, par);
+		this->rebal(par->rht);
+	}
 	return true;
 }
 
@@ -210,21 +357,25 @@ D AVLTree<K,D>::del(const K key)
 {
 	// Get the node
 	Node* toDelete = this->clsNode(this->root, key);
-	if(toDelete->key != key)
+	if(!toDelete || toDelete->key != key)
 		throw std::range_error("del received invalid key");
 	D r(toDelete->data);
 	Node* toReplace = 0x0; // Assume no children
+	Node* toRebal = toDelete->par;
 	// toDelete has two children
 	if(toDelete->lft && toDelete->rht)
 	{
 		// Replacement is successor; no left children
 		toReplace = this->sucNode(toDelete);
-		// Update replace relationships
-		if(toReplace->rht) // Assume toReplace->par = toDelete
+		// Assume toReplace->par == toDelete for now
+		if(toReplace->rht)
 			toReplace->rht->par = toDelete->par;
-		// These concern rgt of toDelete or par of toReplace
+		toRebal = toReplace;
+		// These concern rht of toDelete or par of toReplace
 		if(toReplace->par != toDelete)
 		{
+			// Actually rebalance from parent
+			toRebal = toReplace->par;
 			if(toReplace->rht) // Fixing that
 				toReplace->rht->par = toReplace->par;
 			// No left children, so right child can sub in
@@ -244,6 +395,8 @@ D AVLTree<K,D>::del(const K key)
 		toReplace = toDelete->lft ? toDelete->lft : toDelete->rht;
 		// Update replace relationships
 		toReplace->par = toDelete->par;
+		// Rebalance starting here
+		toRebal = toReplace;
 	}
 	// Change toDelete parent relationships
 	if(toDelete == this->root)
@@ -252,7 +405,8 @@ D AVLTree<K,D>::del(const K key)
 		toDelete->par->lft = toReplace;
 	else
 		toDelete->par->rht = toReplace;
-	// Delete and exit
+	// Rebalance, delete, and exit
+	this->rebal(toRebal);
 	delete toDelete;
 	return r;
 }
@@ -388,7 +542,7 @@ std::ostream& operator<<(std::ostream& o, const AVLTree<K,D>& bt)
 	if(!bt.root)
 		return o;
 	// Output data, key, and parent key in order
-	o << bt.root->data << '[' << bt.root->key << "]{";
+	o << bt.root->data << '[' << bt.root->key << ',' << bt.root->ht << "]{";
 	if(bt.root->par) o << bt.root->par->key;
 	o << "} (";
 	// Recursive calls to subtrees
