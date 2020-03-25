@@ -54,6 +54,7 @@ BinTree<K,D>::~BinTree()
 
 /**
  * Returns the node closest to the given key
+ * @param root Root to start searching with
  * @param key Key to search through the tree with
  * @return Pointer to node containing the key
  */
@@ -218,8 +219,6 @@ D BinTree<K,D>::del(const K key)
 		// Replacement is successor; no left children
 		toReplace = this->sucNode(toDelete);
 		// Update replace relationships
-		if(toReplace->rht) // Assume toReplace->par = toDelete
-			toReplace->rht->par = toDelete->par;
 		// These concern rgt of toDelete or par of toReplace
 		if(toReplace->par != toDelete)
 		{

@@ -56,6 +56,7 @@ AVLTree<K,D>::~AVLTree()
 
 /**
  * Returns the node closest to the given key
+ * @param root Root to begin the search
  * @param key Key to search through the tree with
  * @return Pointer to node containing the key
  */
@@ -209,6 +210,7 @@ long AVLTree<K,D>::setHt(Node* nd)
 
 /**
  * Rebalances the AVL tree, going up from bot
+ * @param bot Node to trace upwards from
  */
 template <typename K, typename D>
 void AVLTree<K,D>::rebal(Node* bot)
@@ -220,7 +222,7 @@ void AVLTree<K,D>::rebal(Node* bot)
 		this->setHt(bot);
 		long lftHt = bot->lft ? bot->lft->ht : -1;
 		long rhtHt = bot->rht ? bot->rht->ht : -1;
-		// Left-heavy?
+		// Left-heavy
 		if(lftHt - rhtHt > 1)
 		{
 			// Test if subree is left- or right-heavy
@@ -236,7 +238,7 @@ void AVLTree<K,D>::rebal(Node* bot)
 				bot = this->rotRht(bot);
 			}
 		}
-		// Right-heavy?
+		// Right-heavy
 		else if(rhtHt - lftHt > 1)
 		{
 			// Test if subtree is left- or right-heavy
@@ -252,8 +254,7 @@ void AVLTree<K,D>::rebal(Node* bot)
 			else
 				bot = this->rotLft(bot);
 		}
-		// Iterate
-		bot = bot->par;
+		bot = bot->par; // Iterate upwards
 	}
 }
 
@@ -368,8 +369,6 @@ D AVLTree<K,D>::del(const K key)
 		// Replacement is successor; no left children
 		toReplace = this->sucNode(toDelete);
 		// Assume toReplace->par == toDelete for now
-		if(toReplace->rht)
-			toReplace->rht->par = toDelete->par;
 		toRebal = toReplace;
 		// These concern rht of toDelete or par of toReplace
 		if(toReplace->par != toDelete)
@@ -406,8 +405,8 @@ D AVLTree<K,D>::del(const K key)
 	else
 		toDelete->par->rht = toReplace;
 	// Rebalance, delete, and exit
-	this->rebal(toRebal);
 	delete toDelete;
+	this->rebal(toRebal);
 	return r;
 }
 
@@ -537,7 +536,7 @@ D* AVLTree<K,D>::toArray()
  */
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const AVLTree<K,D>& bt)
-{	
+{
 	// Base case, natuarlly
 	if(!bt.root)
 		return o;
