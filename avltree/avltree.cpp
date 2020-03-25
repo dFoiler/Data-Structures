@@ -186,6 +186,7 @@ typename AVLTree<K,D>::Node* AVLTree<K,D>::rotRht(Node* root)
 /**
  * Rebalance helper; sets the height of the node
  * Assumes height of lft and rht are accurate
+ * @param nd The node to set the height of
  * @return Height of the node
  */
 template <typename K, typename D>
@@ -304,15 +305,13 @@ int AVLTree<K,D>::depth(const K key)
  * @return Zero-indexed depth of tree
  */
 template <typename K, typename D>
-int AVLTree<K,D>::depth()
+inline int AVLTree<K,D>::depth()
 {
 	// Empty tree gives -1
 	if(!this->root)
 		return -1;
-	// Run recursive calls
-	int dLft = AVLTree<K,D>(this->root->lft).depth();
-	int dRht = AVLTree<K,D>(this->root->rht).depth();
-	return 1 + (dLft > dRht ? dLft : dRht);
+	// Return the height of root
+	return this->root->ht;
 }
 
 /**

@@ -19,7 +19,7 @@ class AVLTree
 		AVLTree();
 		~AVLTree();
 		int size();
-		int depth();
+		inline int depth();
 		int depth(const K key);
 		bool ins(const K key, const D& data);
 		D del(const K key);
