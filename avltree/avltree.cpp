@@ -230,7 +230,7 @@ void AVLTree<K,D>::rebal(Node* bot)
 			lftHt = bot->lft->lft ? bot->lft->lft->ht : -1;
 			rhtHt = bot->lft->rht ? bot->lft->rht->ht : -1;
 			// Left-heavy
-			if(lftHt > rhtHt)
+			if(lftHt >= rhtHt)
 				bot = this->rotRht(bot);
 			// Right-heavy
 			else
