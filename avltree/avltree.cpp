@@ -540,7 +540,7 @@ std::ostream& operator<<(std::ostream& o, const AVLTree<K,D>& bt)
 	if(!bt.root)
 		return o;
 	// Output data, key, and parent key in order
-	o << bt.root->data << '[' << bt.root->key << ',' << bt.root->ht << "]{";
+	o << bt.root->data << '[' << bt.root->key << "]{";
 	if(bt.root->par) o << bt.root->par->key;
 	o << "} (";
 	// Recursive calls to subtrees
