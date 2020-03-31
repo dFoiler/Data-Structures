@@ -16,7 +16,7 @@ inline Heap<K>::Heap(const int size)
 template <typename K>
 inline Heap<K>::~Heap()
 {
-	delete this->array;
+	delete[] this->array;
 }
 
 /**
