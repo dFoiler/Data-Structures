@@ -5,14 +5,15 @@ int main()
 {
 	// Mersenne twister
 	int start = 53;
-	int mul = 37;
 	int mod = 100;
+	int mul = (37*37) % 100;
 	int terms = 20;
-	Heap<int> hp(19);
+	Heap<float> hp(19);
 	int term = start;
+	// Insert and then output
 	for(int i = 0; i < terms; ++i)
 	{
-		std::cout << "Inserting " << term << ": " << hp.ins(term) << std::endl;
+		std::cout << "Inserting " << term << ": " << hp.ins(term/2.0) << std::endl;
 		std::cout << hp << std::endl;
 		term = (term * mul) % mod;
 	}

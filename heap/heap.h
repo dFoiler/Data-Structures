@@ -6,7 +6,7 @@ class Heap
 {
 	private:
 		int size;
-		int* array;
+		K* array;
 		int next;
 	public:
 		Heap(const int size);
