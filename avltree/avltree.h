@@ -14,6 +14,7 @@ class AVLTree
 		Node* rotRht(Node* root);
 		long setHt(Node* nd);
 		void rebal(Node* bot);
+		std::ostream& printHelper(std::ostream&, int depth, char child);
 		bool recursive;
 	public:
 		AVLTree();
@@ -32,7 +33,7 @@ class AVLTree
 		K min();
 			
 	template <typename KK, typename DD>
-	friend std::ostream& operator<< (std::ostream&, const AVLTree<KK,DD>&);
+	friend std::ostream& operator<< (std::ostream&, AVLTree<KK,DD>&);
 };
 
 #include "avltree.cpp"

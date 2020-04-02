@@ -373,22 +373,37 @@ D* BinTree<K,D>::toArray()
 }
 
 /**
- * Output operator for bintree
- * Uses nested parantheses to denote parent-child relationships
+ * Helper function for operator<<
  * @param o Output stream to attach to
- * @param bt Binary tree to print
+ * @param depth Current depth in printing
+ * @param child Status of root (left/right/root child)
+ * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
+std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char child)
+{
+	// Degenerate base case
+	if(!this->root) return o;
+	// Right child
+	BinTree(this->root->rht).printHelper(o,depth+1,'/');
+	// Root
+	for(int i = 0; i < depth; ++i)
+		o << '\t';
+	o << child << ' ';
+	o << this->root->data << '[' << this->root->key << ']' << std::endl;
+	// Left child
+	BinTree(this->root->lft).printHelper(o,depth+1,'\\');
+	return o;
+}
+
+/**
+ * Output operator for bintree; calls printHelper
+ * @param o Output stream to attach to
+ * @param bt Binary tree to print
+ * @return New output stream
+ */
+template <typename K, typename D>
+std::ostream& operator<<(std::ostream& o, BinTree<K,D>& bt)
 {	
-	// Base case, natuarlly
-	if(!bt.root)
-		return o;
-	// Output data, key, and parent key in order
-	o << bt.root->data << '[' << bt.root->key << "]{";
-	if(bt.root->par) o << bt.root->par->key;
-	o << "} (";
-	// Recursive calls to subtrees
-	o << BinTree<K,D>(bt.root->lft) << ") (" << BinTree<K,D>(bt.root->rht);
-	return o << ')';
+	return bt.printHelper(o, 0, '-');
 }

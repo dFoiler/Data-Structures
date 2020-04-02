@@ -11,6 +11,7 @@ class BinTree
 		Node* clsNode(Node* root, const K key);
 		Node* sucNode(Node* node);
 		bool recursive;
+		std::ostream& printHelper(std::ostream& o, int depth, char child);
 	public:
 		BinTree();
 		~BinTree();
@@ -28,7 +29,7 @@ class BinTree
 		K min();
 			
 	template <typename KK, typename DD>
-	friend std::ostream& operator<< (std::ostream&, const BinTree<KK,DD>&);
+	friend std::ostream& operator<< (std::ostream&, BinTree<KK,DD>&);
 };
 
 #include "bintree.cpp"
