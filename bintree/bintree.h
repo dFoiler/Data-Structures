@@ -11,7 +11,7 @@ class BinTree
 		Node* clsNode(Node* root, const K key);
 		Node* sucNode(Node* node);
 		bool recursive;
-		std::ostream& printHelper(std::ostream& o, int depth, char child);
+		std::ostream& printHelper(std::ostream& o, int depth, char* path, char child);
 	public:
 		BinTree();
 		~BinTree();

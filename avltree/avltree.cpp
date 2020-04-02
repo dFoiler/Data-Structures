@@ -535,19 +535,27 @@ D* AVLTree<K,D>::toArray()
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char child)
+std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child)
 {
 	// Degenerate base case
 	if(!this->root) return o;
 	// Right child
-	AVLTree(this->root->rht).printHelper(o,depth+1,'/');
+	path[depth] = '1';
+	AVLTree(this->root->rht).printHelper(o, depth+1, path, '/');
 	// Root
+	path[depth] = 0x0;
 	for(int i = 0; i < depth; ++i)
+	{
+		// Vertical bars added if we left-right or right-left
+		if(i > 0 && path[i-1] != path[i])
+			o << '|';
 		o << '\t';
-	o << child << ' ';
+	}
+	o << ' ' << child << ' ';
 	o << this->root->data << '[' << this->root->key << ']' << std::endl;
 	// Left child
-	AVLTree(this->root->lft).printHelper(o,depth+1,'\\');
+	path[depth] = '0';
+	AVLTree(this->root->lft).printHelper(o, depth+1, path, '\\');
 	return o;
 }
 
@@ -560,5 +568,6 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char child)
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, AVLTree<K,D>& avl)
 {
-	return avl.printHelper(o, 0, '-');
+	char path[avl.depth()];
+	return avl.printHelper(o, 0, path, '-');
 }

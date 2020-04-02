@@ -14,7 +14,7 @@ class AVLTree
 		Node* rotRht(Node* root);
 		long setHt(Node* nd);
 		void rebal(Node* bot);
-		std::ostream& printHelper(std::ostream&, int depth, char child);
+		std::ostream& printHelper(std::ostream&, int depth, char* path, char child);
 		bool recursive;
 	public:
 		AVLTree();

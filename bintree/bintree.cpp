@@ -380,20 +380,28 @@ D* BinTree<K,D>::toArray()
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char child)
+std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child)
 {
-	// Degenerate base case
-	if(!this->root) return o;
-	// Right child
-	BinTree(this->root->rht).printHelper(o,depth+1,'/');
-	// Root
+        // Degenerate base case
+        if(!this->root) return o;
+        // Right child
+        path[depth] = '1';  
+	BinTree(this->root->rht).printHelper(o, depth+1, path, '/');
+        // Root
+        path[depth] = 0x0;
 	for(int i = 0; i < depth; ++i)
-		o << '\t';
-	o << child << ' ';
-	o << this->root->data << '[' << this->root->key << ']' << std::endl;
-	// Left child
-	BinTree(this->root->lft).printHelper(o,depth+1,'\\');
-	return o;
+        {
+                // Vertical bars added if we left-right or right-left
+		if(i > 0 && path[i-1] != path[i])
+			o << '|';
+                o << '\t';
+        }
+	o << ' ' << child << ' ';
+        o << this->root->data << '[' << this->root->key << ']' << std::endl;
+        // Left child
+        path[depth] = '0';
+        BinTree(this->root->lft).printHelper(o, depth+1, path, '\\');
+        return o;
 }
 
 /**
@@ -404,6 +412,7 @@ std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char child)
  */
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, BinTree<K,D>& bt)
-{	
-	return bt.printHelper(o, 0, '-');
+{
+	char path[bt.depth()];
+	return bt.printHelper(o, 0, path, '-');
 }
