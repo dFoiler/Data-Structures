@@ -540,15 +540,14 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char child)
 	// Degenerate base case
 	if(!this->root) return o;
 	// Right child
-	AVLTree(this->root->rht).printHelper(o,depth+1,'l');
+	AVLTree(this->root->rht).printHelper(o,depth+1,'/');
 	// Root
 	for(int i = 0; i < depth; ++i)
 		o << '\t';
-	if(child == 'l') o << "/ ";
-	if(child == 'r') o << "\\ ";
+	o << child << ' ';
 	o << this->root->data << '[' << this->root->key << ']' << std::endl;
 	// Left child
-	AVLTree(this->root->lft).printHelper(o,depth+1,'r');
+	AVLTree(this->root->lft).printHelper(o,depth+1,'\\');
 	return o;
 }
 
@@ -561,5 +560,5 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char child)
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, AVLTree<K,D>& avl)
 {
-	return avl.printHelper(o, 0, '.');
+	return avl.printHelper(o, 0, '-');
 }
