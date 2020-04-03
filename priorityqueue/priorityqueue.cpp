@@ -87,6 +87,7 @@ inline void PQueue<T>::push(const T& data, const int priority)
 
 /**
  * Dequeues data from the queue
+ * Throws an error if handed an empty queue
  * @return Value of data stored
  */
 template <typename T>
@@ -94,7 +95,7 @@ T PQueue<T>::dequeue()
 {
 	// If there is no list, return nothing
 	if(!this->beg)
-		return NULL;
+		throw std::range_error("dequeue received an empty queue");
 	// Extract the beginning, and move it along
 	Node* oldBeg = this->beg;
 	T r(oldBeg->data);
@@ -119,7 +120,7 @@ inline T PQueue<T>::pop()
  * @return Data stored in the first-queued element
  */
 template <typename T>
-T& PQueue<T>::top()
+T& PQueue<T>::top() const
 {
 	return this->beg->data;
 }

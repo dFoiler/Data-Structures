@@ -8,28 +8,28 @@ class BinTree
 		struct Node;
 		Node* root;
 		BinTree(Node* root);
-		Node* clsNode(Node* root, const K key);
-		Node* sucNode(Node* node);
+		Node* clsNode(Node* root, const K key) const;
+		Node* sucNode(Node* node) const;
 		bool recursive;
-		std::ostream& printHelper(std::ostream& o, int depth, char* path, char child);
+		std::ostream& printHelper(std::ostream& o, int depth, char* path, char child) const;
 	public:
 		BinTree();
 		~BinTree();
-		int size();
-		int depth();
-		int depth(const K key);
+		int size() const;
+		int depth() const;
+		int depth(const K key) const;
 		bool ins(const K key, const D& data);
 		D del(const K key);
-		bool contains(const K key);
-		D& operator[](const K key);
-		D& get(const K key);
-		K suc(const K key);
-		D* toArray();
-		K max();
-		K min();
+		bool contains(const K key) const;
+		D& operator[](const K key) const;
+		inline D& get(const K key) const;
+		K suc(const K key) const;
+		K max() const;
+		K min() const;
+		D* toArray() const;
 			
 	template <typename KK, typename DD>
-	friend std::ostream& operator<< (std::ostream&, BinTree<KK,DD>&);
+	friend std::ostream& operator<< (std::ostream&, const BinTree<KK,DD>&);
 };
 
 #include "bintree.cpp"

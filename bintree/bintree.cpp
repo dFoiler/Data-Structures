@@ -59,7 +59,7 @@ BinTree<K,D>::~BinTree()
  * @return Pointer to node containing the key
  */
 template <typename K, typename D>
-typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key)
+typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key) const
 {
 	// Does root exist?
 	if(!root)
@@ -94,7 +94,7 @@ typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key)
  * @return Null if node is maximal, otherwise successor
  */
 template <typename K, typename D>
-typename BinTree<K,D>::Node* BinTree<K,D>::sucNode(Node* node)
+typename BinTree<K,D>::Node* BinTree<K,D>::sucNode(Node* node) const
 {
 	Node* next(node);
 	// Is there space to the right?
@@ -120,7 +120,7 @@ typename BinTree<K,D>::Node* BinTree<K,D>::sucNode(Node* node)
  * @return Number of nodes in the tree
  */
 template <typename K, typename D>
-int BinTree<K,D>::size()
+int BinTree<K,D>::size() const
 {
 	// Is there anything there?
 	if(!this->root)
@@ -137,7 +137,7 @@ int BinTree<K,D>::size()
  * @return Zero-indexed depth of the key
  */
 template <typename K, typename D>
-int BinTree<K,D>::depth(const K key)
+int BinTree<K,D>::depth(const K key) const
 {
 	// Find the correct node
 	Node* cls = this->clsNode(this->root, key);
@@ -161,7 +161,7 @@ int BinTree<K,D>::depth(const K key)
  * @return Zero-indexed depth of tree
  */
 template <typename K, typename D>
-int BinTree<K,D>::depth()
+int BinTree<K,D>::depth() const
 {
 	// Empty tree gives -1
 	if(!this->root)
@@ -260,7 +260,7 @@ D BinTree<K,D>::del(const K key)
  * @return True iff key is present in tree
  */
 template <typename K, typename D>
-inline bool BinTree<K,D>::contains(const K key)
+inline bool BinTree<K,D>::contains(const K key) const
 {
 	Node* cls = this->clsNode(this->root, key);
 	return cls && cls->key == key;
@@ -273,7 +273,7 @@ inline bool BinTree<K,D>::contains(const K key)
  * @return Data of the given key
  */
 template <typename K, typename D>
-D& BinTree<K,D>::operator[](const K key)
+D& BinTree<K,D>::operator[](const K key) const
 {
 	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
@@ -292,7 +292,7 @@ D& BinTree<K,D>::operator[](const K key)
  * @return Data of the given key
  */
 template <typename K, typename D>
-inline D& BinTree<K,D>::get(const K key)
+inline D& BinTree<K,D>::get(const K key) const
 {
 	return (*this)[key];
 }
@@ -304,7 +304,7 @@ inline D& BinTree<K,D>::get(const K key)
  * @return Next key in the tree
  */
 template <typename K, typename D>
-inline K BinTree<K,D>::suc(const K key)
+inline K BinTree<K,D>::suc(const K key) const
 {
 	// Get the needed node
 	Node* cls = this->clsNode(this->root, key);
@@ -323,7 +323,7 @@ inline K BinTree<K,D>::suc(const K key)
  * @return Maximum key
  */
 template <typename K, typename D>
-K BinTree<K,D>::max()
+K BinTree<K,D>::max() const
 {
 	Node* r = this->root;
 	if(!r)
@@ -340,7 +340,7 @@ K BinTree<K,D>::max()
  * @return Minimum key
  */
 template <typename K, typename D>
-K BinTree<K,D>::min()
+K BinTree<K,D>::min() const
 {
 	Node* r = this->root;
 	if(!r)
@@ -357,7 +357,7 @@ K BinTree<K,D>::min()
  * @retrun Array of data sorted by key
  */
 template <typename K, typename D>
-D* BinTree<K,D>::toArray()
+D* BinTree<K,D>::toArray() const
 {
 	if(!this->root)
 		return 0x0;
@@ -380,7 +380,7 @@ D* BinTree<K,D>::toArray()
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child)
+std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child) const
 {
         // Degenerate base case
         if(!this->root) return o;
@@ -411,7 +411,7 @@ std::ostream& BinTree<K,D>::printHelper(std::ostream& o, int depth, char* path, 
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& operator<<(std::ostream& o, BinTree<K,D>& bt)
+std::ostream& operator<<(std::ostream& o, const BinTree<K,D>& bt)
 {
 	char path[bt.depth()];
 	return bt.printHelper(o, 0, path, '-');

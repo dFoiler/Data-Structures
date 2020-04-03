@@ -61,7 +61,7 @@ AVLTree<K,D>::~AVLTree()
  * @return Pointer to node containing the key
  */
 template <typename K, typename D>
-typename AVLTree<K,D>::Node* AVLTree<K,D>::clsNode(Node* root, const K key)
+typename AVLTree<K,D>::Node* AVLTree<K,D>::clsNode(Node* root, const K key) const
 {
 	// Does root exist?
 	if(!root)
@@ -96,7 +96,7 @@ typename AVLTree<K,D>::Node* AVLTree<K,D>::clsNode(Node* root, const K key)
  * @return Null if node is maximal, otherwise successor
  */
 template <typename K, typename D>
-typename AVLTree<K,D>::Node* AVLTree<K,D>::sucNode(Node* node)
+typename AVLTree<K,D>::Node* AVLTree<K,D>::sucNode(Node* node) const
 {
 	Node* next(node);
 	// Is there space to the right?
@@ -264,7 +264,7 @@ void AVLTree<K,D>::rebal(Node* bot)
  * @return Number of nodes in the tree
  */
 template <typename K, typename D>
-int AVLTree<K,D>::size()
+int AVLTree<K,D>::size() const
 {
 	// Is there anything there?
 	if(!this->root)
@@ -281,7 +281,7 @@ int AVLTree<K,D>::size()
  * @return Zero-indexed depth of the key
  */
 template <typename K, typename D>
-int AVLTree<K,D>::depth(const K key)
+int AVLTree<K,D>::depth(const K key) const
 {
 	// Find the correct node
 	Node* cls = this->clsNode(this->root, key);
@@ -305,7 +305,7 @@ int AVLTree<K,D>::depth(const K key)
  * @return Zero-indexed depth of tree
  */
 template <typename K, typename D>
-inline int AVLTree<K,D>::depth()
+inline int AVLTree<K,D>::depth() const
 {
 	// Empty tree gives -1
 	if(!this->root)
@@ -415,7 +415,7 @@ D AVLTree<K,D>::del(const K key)
  * @return True iff key is present in tree
  */
 template <typename K, typename D>
-inline bool AVLTree<K,D>::contains(const K key)
+inline bool AVLTree<K,D>::contains(const K key) const
 {
 	Node* cls = this->clsNode(this->root, key);
 	return cls && cls->key == key;
@@ -428,7 +428,7 @@ inline bool AVLTree<K,D>::contains(const K key)
  * @return Data of the given key
  */
 template <typename K, typename D>
-D& AVLTree<K,D>::operator[](const K key)
+D& AVLTree<K,D>::operator[](const K key) const
 {
 	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
@@ -447,7 +447,7 @@ D& AVLTree<K,D>::operator[](const K key)
  * @return Data of the given key
  */
 template <typename K, typename D>
-inline D& AVLTree<K,D>::get(const K key)
+inline D& AVLTree<K,D>::get(const K key) const
 {
 	return (*this)[key];
 }
@@ -459,7 +459,7 @@ inline D& AVLTree<K,D>::get(const K key)
  * @return Next key in the tree
  */
 template <typename K, typename D>
-inline K AVLTree<K,D>::suc(const K key)
+inline K AVLTree<K,D>::suc(const K key) const
 {
 	// Get the needed node
 	Node* cls = this->clsNode(this->root, key);
@@ -478,7 +478,7 @@ inline K AVLTree<K,D>::suc(const K key)
  * @return Maximum key
  */
 template <typename K, typename D>
-K AVLTree<K,D>::max()
+K AVLTree<K,D>::max() const
 {
 	Node* r = this->root;
 	if(!r)
@@ -495,7 +495,7 @@ K AVLTree<K,D>::max()
  * @return Minimum key
  */
 template <typename K, typename D>
-K AVLTree<K,D>::min()
+K AVLTree<K,D>::min() const
 {
 	Node* r = this->root;
 	if(!r)
@@ -512,7 +512,7 @@ K AVLTree<K,D>::min()
  * @retrun Array of data sorted by key
  */
 template <typename K, typename D>
-D* AVLTree<K,D>::toArray()
+D* AVLTree<K,D>::toArray() const
 {
 	if(!this->root)
 		return 0x0;
@@ -535,7 +535,7 @@ D* AVLTree<K,D>::toArray()
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child)
+std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child) const
 {
 	// Degenerate base case
 	if(!this->root) return o;
@@ -566,7 +566,7 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, 
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& operator<<(std::ostream& o, AVLTree<K,D>& avl)
+std::ostream& operator<<(std::ostream& o, const AVLTree<K,D>& avl)
 {
 	char path[avl.depth()];
 	return avl.printHelper(o, 0, path, '-');

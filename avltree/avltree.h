@@ -8,32 +8,32 @@ class AVLTree
 		struct Node;
 		Node* root;
 		AVLTree(Node* root);
-		Node* clsNode(Node* root, const K key);
-		Node* sucNode(Node* node);
+		Node* clsNode(Node* root, const K key) const;
+		Node* sucNode(Node* node) const;
 		Node* rotLft(Node* root);
 		Node* rotRht(Node* root);
 		long setHt(Node* nd);
 		void rebal(Node* bot);
-		std::ostream& printHelper(std::ostream&, int depth, char* path, char child);
+		std::ostream& printHelper(std::ostream&, int depth, char* path, char child) const;
 		bool recursive;
 	public:
 		AVLTree();
 		~AVLTree();
-		int size();
-		inline int depth();
-		int depth(const K key);
+		int size() const;
+		inline int depth() const;
+		int depth(const K key) const;
 		bool ins(const K key, const D& data);
 		D del(const K key);
-		bool contains(const K key);
-		D& operator[](const K key);
-		D& get(const K key);
-		K suc(const K key);
-		D* toArray();
-		K max();
-		K min();
+		bool contains(const K key) const;
+		D& operator[](const K key) const;
+		inline D& get(const K key) const;
+		K suc(const K key) const;
+		K max() const;
+		K min() const;
+		D* toArray() const;
 			
 	template <typename KK, typename DD>
-	friend std::ostream& operator<< (std::ostream&, AVLTree<KK,DD>&);
+	friend std::ostream& operator<< (std::ostream&, const AVLTree<KK,DD>&);
 };
 
 #include "avltree.cpp"

@@ -52,6 +52,7 @@ bool Stack<T>::push(const T& data)
 }
 /**
  * Removes the top item of the stack and returns
+ * Throws if stack is empty
  * @return The item that was just popped
  */
 template <typename T>
@@ -59,7 +60,7 @@ T Stack<T>::pop()
 {
 	// Does the stack exist?
 	if(!this->pTop)
-		return NULL;
+		throw std::range_error("pop received empty stack");
 	// Get top node
 	Node* oldTop = this->pTop;
 	// Set new top node
@@ -74,7 +75,7 @@ T Stack<T>::pop()
  * @return The item pointed by pTop
  */
 template <typename T>
-T& Stack<T>::top()
+T& Stack<T>::top() const
 {
 	return pTop->data;
 }
@@ -84,7 +85,7 @@ T& Stack<T>::top()
  * @return True if the top is null, 0 otherwise
  */
 template <typename T>
-bool Stack<T>::empty()
+bool Stack<T>::empty() const
 {
 	return !pTop;
 }

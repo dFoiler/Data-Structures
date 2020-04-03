@@ -28,16 +28,16 @@ class LinkedList
 		LinkedList(const T* tArray, const int& len);
 		~LinkedList();
 		inline void clear();
-		bool isEmpty();
+		bool isEmpty() const;
 		// Some standard stuff
-		bool operator==(const LinkedList& rhs);
-		bool equals(const LinkedList& rhs);
-		bool operator!=(const LinkedList& rhs);
+		bool operator==(const LinkedList& rhs) const;
+		bool equals(const LinkedList& rhs) const;
+		bool operator!=(const LinkedList& rhs) const;
 		// Standardly returns size
-		int size();
+		int size() const;
 		// Array access
-		T& operator[](const int& idx);
-		inline T& get(const int& idx);
+		T& operator[](const int& idx) const;
+		inline T& get(const int& idx) const;
 		inline void set(const int& idx, const T& val);
 		// Adds an element to the end of the list
 		void add(const T& val);
@@ -54,21 +54,21 @@ class LinkedList
 		// Exchange the values stored
 		void exchg(const int& idx1, const int& idx2);
 		// Standard algorithms
-		int find(const T& val);
-		int rfind(const T& val);
-		bool contains(const T& val);
-		LinkedList& subList(const int& start, const int& len);
+		int find(const T& val) const;
+		int rfind(const T& val) const;
+		bool contains(const T& val) const;
+		LinkedList& subList(const int& start, const int& len) const;
 		void sort();
 		void reverse();
 		// Because why not
-		std::string toString();
+		std::string toString() const;
 	private:
 		struct Node;
 		// These are the key privates
 		Node* head;
 		int len;
 		// Retrieve the node just before index
-		Node* nodeJustBefore(const int& idx);
+		Node* nodeJustBefore(const int& idx) const;
 		// Swap two forward pointers; used for swap
 		inline void swapFwds(Node* n1, Node* n2);
 		// Outputting

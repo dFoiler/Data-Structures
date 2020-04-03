@@ -22,7 +22,7 @@ int main()
 	std::cout << "Setting top to 123" << std::endl;
 	q.top() = 123;
 	std::cout << "Current: " << q << std::endl;
-	for(int i = 0; i < 20; ++i)
+	for(int i = 0; i < 21; ++i)
 	{
 		std::cout << "Dequeue: " << q.pop() << std::endl;
 		std::cout << "Current: " << q << std::endl;

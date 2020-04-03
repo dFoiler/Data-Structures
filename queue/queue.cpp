@@ -1,5 +1,3 @@
-//#include "queue.h"
-
 /**
  * Standard linked list node
  */
@@ -71,14 +69,15 @@ void Queue<T>::push(const T& data)
 
 /**
  * Dequeues data from the queue
+ * Throw std::range_error if empty
  * @return Value of data stored
  */
 template <typename T>
 T Queue<T>::dequeue()
 {
-	// If there is no list, return nothing
+	// If there is no list, cry
 	if(!this->beg)
-		return NULL;
+		throw std::range_error("dequeue received empty queue");
 	// Extract the beginning, and move it along
 	Node* oldBeg = this->beg;
 	T r(oldBeg->data);
@@ -103,7 +102,7 @@ T Queue<T>::pop()
  * @return Data stored in the first-queued element
  */
 template <typename T>
-T& Queue<T>::top()
+T& Queue<T>::top() const
 {
 	return this->beg->data;
 }

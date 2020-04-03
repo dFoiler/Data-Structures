@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 template <typename T>
 class Queue
@@ -14,7 +15,7 @@ class Queue
 		void push(const T& in);
 		T dequeue();
 		T pop();
-		T& top();
+		T& top() const;
 	
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const Queue<S>&);

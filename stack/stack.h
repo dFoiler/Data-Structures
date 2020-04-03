@@ -1,5 +1,5 @@
-#ifndef _Stack_H_
-#define _Stack_H_
+#include <iostream>
+#include <stdexcept>
 
 template <typename T>
 class Stack
@@ -9,17 +9,15 @@ class Stack
 	Node* pTop;
 
 	public:
-		Stack();					// Construct stack
+		Stack();
 		~Stack();
-		bool push(const T& inData);			// Add element to top of stack
-		T pop();					// Return element at top of stack and remove from top
-		T& top();					// Return element at top of stack
-		bool empty();
+		bool push(const T& inData);
+		T pop();
+		T& top() const;
+		bool empty() const;
 
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const Stack<S>&);
 };
 
 #include "stack.cpp"
-
-#endif 		//_Stack_H_

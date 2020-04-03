@@ -164,7 +164,7 @@ inline void LinkedList<T>::clear()
  * @return 1 if this->head is null, 0 if not.
  */
 template <typename T>
-inline bool LinkedList<T>::isEmpty()
+inline bool LinkedList<T>::isEmpty() const
 {
 	return !this->head;
 }
@@ -175,7 +175,7 @@ inline bool LinkedList<T>::isEmpty()
  * @return 1 if the lists are equal, 0 if not.
  */
 template <typename T>
-bool LinkedList<T>::operator==(const LinkedList<T>& rhs)
+bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const
 {
 	// Run length checking
 	if(this->len != rhs.len)
@@ -202,7 +202,7 @@ bool LinkedList<T>::operator==(const LinkedList<T>& rhs)
  * @return 1 if the lists are equal, 0 if not.
  */
 template <typename T>
-inline bool LinkedList<T>::equals(const LinkedList<T>& rhs)
+inline bool LinkedList<T>::equals(const LinkedList<T>& rhs) const
 {
 	return (*this)==rhs;
 }
@@ -214,7 +214,7 @@ inline bool LinkedList<T>::equals(const LinkedList<T>& rhs)
  * @return 0 if the lists are equal, 1 if not.
  */
 template <typename T>
-inline bool LinkedList<T>::operator!=(const LinkedList<T>& rhs)
+inline bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) const
 {
 	return !((*this)==rhs);
 }
@@ -224,7 +224,7 @@ inline bool LinkedList<T>::operator!=(const LinkedList<T>& rhs)
  * @return The length of the list, passed by value.
  */
 template <typename T>
-inline int LinkedList<T>::size()
+inline int LinkedList<T>::size() const
 {
 	return this->len;
 }
@@ -237,7 +237,7 @@ inline int LinkedList<T>::size()
  * @return Value of the node at index, passed by reference.
  */
 template <typename T>
-inline T& LinkedList<T>::operator[](const int& idx)
+inline T& LinkedList<T>::operator[](const int& idx) const
 {
 	// Call nodeJustBefore if nonzero, in which case there should be something before.
 	if(idx)
@@ -251,7 +251,7 @@ inline T& LinkedList<T>::operator[](const int& idx)
  * @return Value of the node at index, passed by reference.
  */
 template <typename T>
-inline T& LinkedList<T>::get(const int& idx)
+inline T& LinkedList<T>::get(const int& idx) const
 {
 	return (*this)[idx];
 }
@@ -448,7 +448,7 @@ void LinkedList<T>::exchg(const int& idx1, const int& idx2)
  * @return Index of first node storing val if one exists; -1 if not.
  */
 template <typename T>
-int LinkedList<T>::find(const T& val)
+int LinkedList<T>::find(const T& val) const
 {
 	// Itearte down the list
 	Node* current = this->head;
@@ -468,7 +468,7 @@ int LinkedList<T>::find(const T& val)
  * @return Index of last node storing val if one exists; -1 if not.
  */
 template <typename T>
-int LinkedList<T>::rfind(const T& val)
+int LinkedList<T>::rfind(const T& val) const
 {
 	int r = -1;
 	// Iterate down the list
@@ -490,7 +490,7 @@ int LinkedList<T>::rfind(const T& val)
  * @return True iff val is in the list
  */
 template <typename T>
-bool LinkedList<T>::contains(const T& val)
+bool LinkedList<T>::contains(const T& val) const
 {
 	return this->find(val) != -1;
 }
@@ -503,7 +503,7 @@ bool LinkedList<T>::contains(const T& val)
  * @return The desired segment of the list, passed by reference.
  */
 template <typename T>
-LinkedList<T>& LinkedList<T>::subList(const int& start, const int& len)
+LinkedList<T>& LinkedList<T>::subList(const int& start, const int& len) const
 {
 	// Extract node just before, being careful about 0
 	Node* thisCurrent = this->head;
@@ -617,7 +617,7 @@ std::ostream& operator<<(std::ostream& o, const LinkedList<T>& list)
  * @return Desired ending string.
  */
 template <typename T>
-std::string LinkedList<T>::toString()
+std::string LinkedList<T>::toString() const
 {
 	// Check if list is empty
 	if(!this->len || !this->head)
@@ -661,7 +661,7 @@ inline void LinkedList<T>::swapFwds(Node* n1, Node* n2)
  * @return Pointer to node just before the specified index, except 0 returns this->head.
  */
 template <typename T>
-typename LinkedList<T>::Node* LinkedList<T>::nodeJustBefore(const int& idx)
+typename LinkedList<T>::Node* LinkedList<T>::nodeJustBefore(const int& idx) const
 {
 	// Size check
 	if(idx < 0 || idx > this->len)

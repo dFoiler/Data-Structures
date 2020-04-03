@@ -89,7 +89,7 @@ K Heap<K>::del()
  * @return Top of the heap
  */
 template <typename K>
-inline K Heap<K>::peek()
+inline K Heap<K>::peek() const
 {
 	return this->array[0];
 }

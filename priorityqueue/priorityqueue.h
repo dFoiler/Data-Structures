@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 template <typename T>
 class PQueue
@@ -14,7 +15,7 @@ class PQueue
 		inline void push(const T& in, const int priority);
 		T dequeue();
 		inline T pop();
-		T& top();
+		T& top() const;
 	
 	template <typename S>
 	friend std::ostream& operator<< (std::ostream&, const PQueue<S>&);
