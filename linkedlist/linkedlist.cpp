@@ -1,8 +1,3 @@
-#ifndef LL_H
-#define LL_H
-#include "linkedlist.h"
-#endif
-
 #ifndef IOSTREAM
 #define IOSTREAM
 #include <iostream>
@@ -490,6 +485,17 @@ int LinkedList<T>::rfind(const T& val)
 }
 
 /**
+ * Simple contains method, calling the find method
+ * @param val Value to search for
+ * @return True iff val is in the list
+ */
+template <typename T>
+bool LinkedList<T>::contains(const T& val)
+{
+	return this->find(val) != -1;
+}
+
+/**
  * Copies a sublist between the specified indices into the heap.
  * If the length is longer than it should be, this will be interpreted as memory corruption and seg fault.
  * @param start Index to start the sublist.
@@ -599,7 +605,7 @@ std::ostream& operator<<(std::ostream& o, const LinkedList<T>& list)
 	o << '[' << list.head->val;
 	// Now iterate
 	for(typename LinkedList<T>::Node* current = list.head->fwd;
-		!current; current = current->fwd)
+		current; current = current->fwd)
 		o << ',' << ' ' << current->val;
 	// Close bracket
 	return o << ']';
@@ -659,10 +665,7 @@ typename LinkedList<T>::Node* LinkedList<T>::nodeJustBefore(const int& idx)
 {
 	// Size check
 	if(idx < 0 || idx > this->len)
-	{
-		std::cerr << "Invalid index caught in nodeJustBefore." << std::endl;
-		std::exit(1);
-	}
+		throw std::range_error("Invalid index caught in nodeJustBefore.");
 	// Just keep going until just before index
 	Node* before = this->head;
 	for(int j = 0; j < idx-1; ++j)

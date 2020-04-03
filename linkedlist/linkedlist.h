@@ -1,6 +1,7 @@
 #ifndef IOSTREAM
 #define IOSTREAM
 #include <iostream>
+#include <stdexcept>
 #endif
 
 #ifndef STRING
@@ -55,6 +56,7 @@ class LinkedList
 		// Standard algorithms
 		int find(const T& val);
 		int rfind(const T& val);
+		bool contains(const T& val);
 		LinkedList& subList(const int& start, const int& len);
 		void sort();
 		void reverse();
@@ -70,6 +72,8 @@ class LinkedList
 		// Swap two forward pointers; used for swap
 		inline void swapFwds(Node* n1, Node* n2);
 		// Outputting
-		template <typename S>
-		friend std::ostream& operator<<(std::ostream& o, const LinkedList<S>& list);
+		template <typename TT>
+		friend std::ostream& operator<<(std::ostream& o, const LinkedList<TT>& list);
 };
+
+#include "linkedlist.cpp"
