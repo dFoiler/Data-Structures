@@ -535,15 +535,14 @@ D* AVLTree<K,D>::toArray() const
  * @return New output stream
  */
 template <typename K, typename D>
-std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, char child) const
+std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, bool* path, char child) const
 {
 	// Degenerate base case
 	if(!this->root) return o;
 	// Right child
-	path[depth] = '1';
+	path[depth] = 1;
 	AVLTree(this->root->rht).printHelper(o, depth+1, path, '/');
 	// Root
-	path[depth] = 0x0;
 	for(int i = 0; i < depth; ++i)
 	{
 		// Vertical bars added if we left-right or right-left
@@ -554,13 +553,14 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, 
 	o << ' ' << child << ' ';
 	o << this->root->data << '[' << this->root->key << ']' << std::endl;
 	// Left child
-	path[depth] = '0';
+	path[depth] = 0;
 	AVLTree(this->root->lft).printHelper(o, depth+1, path, '\\');
 	return o;
 }
 
 /**
  * Output operator for bintree; calls printHelper
+ * Requires depth < 64.
  * @param o Output stream to attach to
  * @param avl Binary tree to print
  * @return New output stream
@@ -568,6 +568,38 @@ std::ostream& AVLTree<K,D>::printHelper(std::ostream& o, int depth, char* path, 
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const AVLTree<K,D>& avl)
 {
-	char path[avl.depth()];
-	return avl.printHelper(o, 0, path, '-');
+	if(!avl.root) return o;
+	bool path[avl.depth()];
+	avl.printHelper(o, 0, path, '-');
+	/*// Do a breadth-first search of the nodes
+	long long len = 1 << (avl.depth() + 1);
+	typename AVLTree<K,D>::Node* nds[len];
+	nds[1] = avl.root;
+	for(int i = 1; i < len/2; ++i) // Load children into bds
+	{
+		if(nds[i])
+		{
+			nds[2*i] = nds[i]->lft;
+			nds[2*i+1] = nds[i]->rht;
+		}
+		else
+			nds[2*i] = nds[2*i+1] = 0x0;
+	}
+	int depth = 1; // 1-indexed
+	int spacing = 1 << (avl.depth()-depth+1);
+	for(int i = 1; i < len; ++i)
+	{
+		// Output
+		if(nds[i])
+			o << nds[i]->data << '[' << nds[i]->key << ']';
+		if((i+1) == 1 << depth)
+		{
+			++ depth; spacing /= 2;
+			std::cout << "[ENDL]" << std::endl;
+		}
+		else
+			for(int s = 0; s < spacing; ++s)
+				std::cout << '\t' << '|';
+	}*/
+	return o;
 }
