@@ -8,6 +8,7 @@ class Heap
 		int size;
 		K* array;
 		int next;
+		std::ostream& printHelper(std::ostream&, int, int, char*, char) const;
 	public:
 		Heap(const int size);
 		~Heap();

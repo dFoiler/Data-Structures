@@ -95,16 +95,50 @@ inline K Heap<K>::peek() const
 }
 
 /**
- * Output operator for heap
- * Simply displays the heap array in order, {} for parent
- * @param o Output stream to attack to
- * @param hp Heap to output
+ * Helper function for operator<<
+ * @param o Output stream to attach to
+ * @param depth Current depth in printing
+ * @param child Status of root (left/right/root child)
+ * @return New output stream
  */
 template <typename K>
-std::ostream& operator<< (std::ostream& o, const Heap<K>& h)
+std::ostream& Heap<K>::printHelper(std::ostream& o, int index, int depth, char* path, char child) const
 {
-	o << h.array[0];
-	for(int i = 1; i < h.next; ++i)
-		o << ' ' << h.array[i] << '{' << h.array[(i-1)/2] << '}';
+	// Degenerate base case
+	if(index >= this->next) return o;
+	// Right child
+	path[depth] = '1';
+	this->printHelper(o, 2*index+2, depth+1, path, '/');
+	// Root
+	path[depth] = 0x0;
+	for(int i = 0; i < depth; ++i)
+	{
+		// Vertical bars added if we left-right or right-left
+		if(i > 0 && path[i-1] != path[i])
+			o << '|';
+		o << '\t';
+	}
+	o << ' ' << child << ' ';
+	o << this->array[index] << std::endl;
+	// Left child
+	path[depth] = '0';
+	this->printHelper(o, 2*index+1, depth+1, path, '\\');
 	return o;
+}
+
+/**
+ * Output operator for bintree; calls printHelper
+ * @param o Output stream to attach to
+ * @param h Heap to print
+ * @return New output stream
+ */
+template <typename K>
+std::ostream& operator<<(std::ostream& o, const Heap<K>& h)
+{
+	// Compute maximum depth
+	int d = 0;
+	while(1 << (d++) < h.size);
+	// Call printHelper
+	char path[d];
+	return h.printHelper(o, 0, 0, path, '-');
 }
