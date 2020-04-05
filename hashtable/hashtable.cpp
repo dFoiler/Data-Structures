@@ -168,7 +168,7 @@ D& HashTable<K,D>::get(const K& key) const
  * @param data Data to set key to
  */
 template <typename K, typename D>
-void HashTable<K,D>::set(const K& key, const D& data)
+inline void HashTable<K,D>::set(const K& key, const D& data)
 {
 	(*this)[key] = data;
 }

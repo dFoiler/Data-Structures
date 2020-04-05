@@ -12,7 +12,7 @@ class Heap
 	public:
 		Heap(const int size);
 		~Heap();
-		bool ins(const K key);
+		bool ins(const K& key);
 		K del();
 		inline K peek() const;
 	template <typename KK>

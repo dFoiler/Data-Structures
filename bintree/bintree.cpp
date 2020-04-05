@@ -59,7 +59,7 @@ BinTree<K,D>::~BinTree()
  * @return Pointer to node containing the key
  */
 template <typename K, typename D>
-typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K key) const
+typename BinTree<K,D>::Node* BinTree<K,D>::clsNode(Node* root, const K& key) const
 {
 	// Does root exist?
 	if(!root)
@@ -137,7 +137,7 @@ int BinTree<K,D>::size() const
  * @return Zero-indexed depth of the key
  */
 template <typename K, typename D>
-int BinTree<K,D>::depth(const K key) const
+int BinTree<K,D>::depth(const K& key) const
 {
 	// Find the correct node
 	Node* cls = this->clsNode(this->root, key);
@@ -179,7 +179,7 @@ int BinTree<K,D>::depth() const
  * @return Success
  */
 template <typename K, typename D>
-bool BinTree<K,D>::ins(const K key, const D& data)
+bool BinTree<K,D>::ins(const K& key, const D& data)
 {
 	Node* par = this->clsNode(this->root, key);
 	// Was the tree empty?
@@ -205,7 +205,7 @@ bool BinTree<K,D>::ins(const K key, const D& data)
  * @return Value stored in removed element
  */
 template <typename K, typename D>
-D BinTree<K,D>::del(const K key)
+D BinTree<K,D>::del(const K& key)
 {
 	// Get the node
 	Node* toDelete = this->clsNode(this->root, key);
@@ -260,7 +260,7 @@ D BinTree<K,D>::del(const K key)
  * @return True iff key is present in tree
  */
 template <typename K, typename D>
-inline bool BinTree<K,D>::contains(const K key) const
+inline bool BinTree<K,D>::contains(const K& key) const
 {
 	Node* cls = this->clsNode(this->root, key);
 	return cls && cls->key == key;
@@ -273,7 +273,7 @@ inline bool BinTree<K,D>::contains(const K key) const
  * @return Data of the given key
  */
 template <typename K, typename D>
-D& BinTree<K,D>::operator[](const K key) const
+D& BinTree<K,D>::operator[](const K& key) const
 {
 	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
@@ -292,9 +292,21 @@ D& BinTree<K,D>::operator[](const K key) const
  * @return Data of the given key
  */
 template <typename K, typename D>
-inline D& BinTree<K,D>::get(const K key) const
+inline D& BinTree<K,D>::get(const K& key) const
 {
 	return (*this)[key];
+}
+
+/**
+ * Sets data at key to data
+ * Basically calls []
+ * @param key Key to set
+ * @param data Data to set key to
+ */
+template <typename K, typename D>
+inline void BinTree<K,D>::set(const K& key, const D& data)
+{
+	(*this)[key] = data;
 }
 
 /**
@@ -304,7 +316,7 @@ inline D& BinTree<K,D>::get(const K key) const
  * @return Next key in the tree
  */
 template <typename K, typename D>
-inline K BinTree<K,D>::suc(const K key) const
+inline K BinTree<K,D>::suc(const K& key) const
 {
 	// Get the needed node
 	Node* cls = this->clsNode(this->root, key);

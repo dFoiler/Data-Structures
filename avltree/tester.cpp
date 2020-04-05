@@ -24,8 +24,14 @@ int main()
 	toAdd = initToAdd;
 	for(int i = 0; i < terms; ++i)
 	{
-		std::cout << "Changing to " << toAdd << "[" << toAdd << "] : "
-			<< (bintree[toAdd]=toAdd) << std::endl;
+		std::cout << "Changing to " << toAdd << "[" << toAdd << "] : ";
+		if(i % 2 == 0)
+			std::cout << (bintree[toAdd]=toAdd) << std::endl;
+		else
+		{
+			bintree.set(toAdd, toAdd);
+			std::cout << bintree.get(toAdd) << std::endl;
+		}
 		toAdd = (toAdd * mult) % mod;
 	}
 	std::cout << "Tree : " << bintree << std::endl;

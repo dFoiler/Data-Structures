@@ -25,7 +25,7 @@ inline Heap<K>::~Heap()
  * @return Success
  */
 template <typename K>
-bool Heap<K>::ins(const K key)
+bool Heap<K>::ins(const K& key)
 {
 	// Is there space?
 	if(this->next >= this->size)

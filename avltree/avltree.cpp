@@ -61,7 +61,7 @@ AVLTree<K,D>::~AVLTree()
  * @return Pointer to node containing the key
  */
 template <typename K, typename D>
-typename AVLTree<K,D>::Node* AVLTree<K,D>::clsNode(Node* root, const K key) const
+typename AVLTree<K,D>::Node* AVLTree<K,D>::clsNode(Node* root, const K& key) const
 {
 	// Does root exist?
 	if(!root)
@@ -281,7 +281,7 @@ int AVLTree<K,D>::size() const
  * @return Zero-indexed depth of the key
  */
 template <typename K, typename D>
-int AVLTree<K,D>::depth(const K key) const
+int AVLTree<K,D>::depth(const K& key) const
 {
 	// Find the correct node
 	Node* cls = this->clsNode(this->root, key);
@@ -321,7 +321,7 @@ inline int AVLTree<K,D>::depth() const
  * @return Success
  */
 template <typename K, typename D>
-bool AVLTree<K,D>::ins(const K key, const D& data)
+bool AVLTree<K,D>::ins(const K& key, const D& data)
 {
 	Node* par = this->clsNode(this->root, key);
 	// Was the tree empty?
@@ -353,7 +353,7 @@ bool AVLTree<K,D>::ins(const K key, const D& data)
  * @return Value stored in removed element
  */
 template <typename K, typename D>
-D AVLTree<K,D>::del(const K key)
+D AVLTree<K,D>::del(const K& key)
 {
 	// Get the node
 	Node* toDelete = this->clsNode(this->root, key);
@@ -415,7 +415,7 @@ D AVLTree<K,D>::del(const K key)
  * @return True iff key is present in tree
  */
 template <typename K, typename D>
-inline bool AVLTree<K,D>::contains(const K key) const
+inline bool AVLTree<K,D>::contains(const K& key) const
 {
 	Node* cls = this->clsNode(this->root, key);
 	return cls && cls->key == key;
@@ -428,7 +428,7 @@ inline bool AVLTree<K,D>::contains(const K key) const
  * @return Data of the given key
  */
 template <typename K, typename D>
-D& AVLTree<K,D>::operator[](const K key) const
+D& AVLTree<K,D>::operator[](const K& key) const
 {
 	Node* ret = this->clsNode(this->root, key);
 	// Is there anything there?
@@ -447,9 +447,21 @@ D& AVLTree<K,D>::operator[](const K key) const
  * @return Data of the given key
  */
 template <typename K, typename D>
-inline D& AVLTree<K,D>::get(const K key) const
+inline D& AVLTree<K,D>::get(const K& key) const
 {
 	return (*this)[key];
+}
+
+/**
+ * Sets value at data to key
+ * Basically calls []
+ * @param key Key to set
+ * @param data Data to set key to
+ */
+template <typename K, typename D>
+inline void AVLTree<K,D>::set(const K& key, const D& data)
+{
+	(*this)[key] = data;
 }
 
 /**
@@ -459,7 +471,7 @@ inline D& AVLTree<K,D>::get(const K key) const
  * @return Next key in the tree
  */
 template <typename K, typename D>
-inline K AVLTree<K,D>::suc(const K key) const
+inline K AVLTree<K,D>::suc(const K& key) const
 {
 	// Get the needed node
 	Node* cls = this->clsNode(this->root, key);
