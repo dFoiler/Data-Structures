@@ -5,14 +5,18 @@
 
 int main()
 {
-	HashTable<float, std::string> itable(20);
+	HashTable<float, std::string> itable(11);
 	std::string s = "data string ";
 	int terms = 10;
-	for(int i = 0; i < terms; ++i)
+	for(int i = 0; i < terms+1; ++i)
 	{
 		std::cout << "Inserting " << s << (char)('A'+i) << " at key " << i << " : ";
 		std::cout << itable.ins(i, s+(char)('A'+i)) << std::endl;
 	}
+	std::cout << "Current table:" << std::endl << itable;
+	std::cout << "Attempting to insert at key 11: ";
+	std::cout << itable.ins(11, "should fail") << std::endl;
+	std::cout << "Deleting at key 10: " << itable.del(10) << std::endl;
 	std::cout << "Attempting to insert at key 1 : ";
 	std::cout << itable.ins(1, "should fail") << std::endl;
 	std::cout << "Current table:" << std::endl << itable;
@@ -38,5 +42,6 @@ int main()
 	{
 		std::cout << "Deleting key " << i << " : ";
 		std::cout << itable.del(i) << std::endl;
+		std::cout << itable << std::endl;
 	}
 }

@@ -9,7 +9,8 @@ class HashTable
 		int size;
 		std::hash<K> hasher;
 		struct Entry;
-		Entry** table;
+		Entry* table;
+		int clsPos(const K& key) const;
 	public:
 		inline HashTable(int size);
 		~HashTable();
