@@ -137,63 +137,6 @@ typename RBTree<K,D>::Node* RBTree<K,D>::sibling(Node* node) const
 }
 
 /**
- * Computes and returns the size of the tree recursively
- * @return Number of nodes in the tree
- */
-template <typename K, typename D>
-int RBTree<K,D>::size() const
-{
-	// Is there anything there?
-	if(!this->root)
-		return 0;
-	// Recursive call
-	return 1 + RBTree<K,D>(this->root->lft).size()
-		+ RBTree<K,D>(this->root->rht).size();
-}
-
-/**
- * Computes and returns zero-indexed depth of a node
- * Throws an error if the node is not present
- * @param key Key to walk with
- * @return Zero-indexed depth of the key
- */
-template <typename K, typename D>
-int RBTree<K,D>::depth(const K& key) const
-{
-	// Find the correct node
-	Node* cls = this->clsNode(this->root, key);
-	if(!cls)
-		throw std::range_error("depth received empty tree");
-	if(key != cls->key)
-		throw std::range_error("depth received invalid key");
-	// Work up the tree to root
-	int r = 0;
-	while(cls->par)
-	{
-		cls = cls->par;
-		++r;
-	}
-	return r;
-}
-
-/**
- * Computes and returns zero-indexed depth of the tree
- * Returns -1 if the tree is empty
- * @return Zero-indexed depth of tree
- */
-template <typename K, typename D>
-int RBTree<K,D>::depth() const
-{
-	// Empty tree gives -1
-	if(!this->root)
-		return -1;
-	// Run recursive calls
-	int dLft = RBTree<K,D>(this->root->lft).depth();
-	int dRht = RBTree<K,D>(this->root->rht).depth();
-	return 1 + (dLft > dRht ? dLft : dRht);
-}
-
-/**
  * Rebalance helper; rotates the given node left
  * @param root Node to rotate as root
  * @return The node replacing root
@@ -251,6 +194,63 @@ typename RBTree<K,D>::Node* RBTree<K,D>::rotRht(Node* root)
 	child->rht = root;
 	// Return new root
 	return child;
+}
+
+/**
+ * Computes and returns the size of the tree recursively
+ * @return Number of nodes in the tree
+ */
+template <typename K, typename D>
+int RBTree<K,D>::size() const
+{
+	// Is there anything there?
+	if(!this->root)
+		return 0;
+	// Recursive call
+	return 1 + RBTree<K,D>(this->root->lft).size()
+		+ RBTree<K,D>(this->root->rht).size();
+}
+
+/**
+ * Computes and returns zero-indexed depth of a node
+ * Throws an error if the node is not present
+ * @param key Key to walk with
+ * @return Zero-indexed depth of the key
+ */
+template <typename K, typename D>
+int RBTree<K,D>::depth(const K& key) const
+{
+	// Find the correct node
+	Node* cls = this->clsNode(this->root, key);
+	if(!cls)
+		throw std::range_error("depth received empty tree");
+	if(key != cls->key)
+		throw std::range_error("depth received invalid key");
+	// Work up the tree to root
+	int r = 0;
+	while(cls->par)
+	{
+		cls = cls->par;
+		++r;
+	}
+	return r;
+}
+
+/**
+ * Computes and returns zero-indexed depth of the tree
+ * Returns -1 if the tree is empty
+ * @return Zero-indexed depth of tree
+ */
+template <typename K, typename D>
+int RBTree<K,D>::depth() const
+{
+	// Empty tree gives -1
+	if(!this->root)
+		return -1;
+	// Run recursive calls
+	int dLft = RBTree<K,D>(this->root->lft).depth();
+	int dRht = RBTree<K,D>(this->root->rht).depth();
+	return 1 + (dLft > dRht ? dLft : dRht);
 }
 
 /**
