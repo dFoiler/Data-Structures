@@ -40,7 +40,8 @@ int main()
 	for(int i = 0; i < terms+1; ++i)
 	{
 		std::cout << '\n' << std::endl;
-		std::cout << "Deleting [" << toAdd << "] : " << bintree.del(toAdd) << std::endl;
+		std::cout << "Deleting [" << toAdd << "] : "  << std::flush;
+		std::cout << bintree.del(toAdd) << std::endl;
 		std::cout << "Size : " << bintree.size() << std::endl;
 		std::cout << std::endl << bintree;
 		std::cout << "Contains : " << bintree.contains(toAdd) << std::endl;

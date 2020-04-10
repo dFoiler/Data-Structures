@@ -341,31 +341,75 @@ bool RBTree<K,D>::ins(const K& key, const D& data)
 template <typename K, typename D>
 void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
 {
-	Node* sib = this->sibling(toDel);
-	Node* par = toDel->par;
 	// toDel is red => Just promote black child
 	if(toDel->color)
 		return;
-	// toDel is black; toRebal is red
+	// toDel is black; toRep is red
 	if(toRep && toRep->color)
 	{
 		// Just paint child black; preserves path
 		toRep->color = 0; return;
 	}
-	// toDel is black; toRebal is black
+	// toDel is black; toRep is black => toRep is a leaf
+	Node* par = toDel->par;
 	// The problem the path from toRep lost a black
-	// We are root
-	if(!par)
-		// 1 black node removed in all paths
-		return;
-	// sib is red
-	if(sib && sib->color)
+	while(true)
 	{
-		// sib's children are black; rot sib to par
-		par->color = 1;
-		sib->color = 0;
+		// We are root: Everything is 1 less, so we're good
+		if(!par) return;
+		bool isLft = (par->lft == toRep);
+		Node* sib = isLft ? par->rht : par->lft;
+		// sib is red
+		if(sib && sib->color)
+		{
+			// sib's children are black; rot sib to par
+			par->color = 1;
+			sib->color = 0;
+			if(isLft)
+			{
+				this->rotLft(par); sib = par->rht;
+			}
+			else
+			{
+				this->rotRht(par); sib = par->lft;
+			}
+			// Now sib is black; keep going
+		}
+		// sib is black; 2 black children
+		if(!(sib->lft&&sib->lft->color) && !(sib->rht&&sib->rht->color))
+		{
+			sib->color = 1;
+			if(par->color)
+			{
+				par->color = 0; return;
+			}
+			// par is black means we recurse
+			toRep = par; par = par->par; continue;
+		}
+		// sib is black; inner child is red
+		if(isLft && sib->lft && sib->lft->color)
+		{
+			sib->color = 1; sib->lft->color = 0;
+			sib = this->rotRht(sib);
+		}
+		if(!isLft && sib->rht && sib->rht->color)
+		{
+			sib->color = 1; sib->rht->color = 0;
+			sib = this->rotLft(sib);
+		}
+		// Now outer child is red
+		bool cBuf = par->color;
+		par->color = sib->color; sib->color = cBuf;
+		if(isLft)
+		{
+			sib->rht->color = 0; this->rotLft(par);
+		}
+		else
+		{
+			sib->lft->color = 0; this->rotRht(par);
+		}
+		return;
 	}
-	// sib is black
 }
 
 /**
