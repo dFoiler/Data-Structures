@@ -254,7 +254,8 @@ int RBTree<K,D>::depth() const
 }
 
 /**
- * Insert helper method
+ * Insert helper method; repairs red-blackness
+ * @param nd Node we just inserted
  */
 template <typename K, typename D>
 void RBTree<K,D>::insRepair(Node* nd)
@@ -333,6 +334,41 @@ bool RBTree<K,D>::ins(const K& key, const D& data)
 }
 
 /**
+ * Delete helper; repairs red-blackness
+ * @param toDel Node deleted
+ * @param toRep Node replacing toDel
+ */
+template <typename K, typename D>
+void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
+{
+	Node* sib = this->sibling(toDel);
+	Node* par = toDel->par;
+	// toDel is red => Just promote black child
+	if(toDel->color)
+		return;
+	// toDel is black; toRebal is red
+	if(toRep && toRep->color)
+	{
+		// Just paint child black; preserves path
+		toRep->color = 0; return;
+	}
+	// toDel is black; toRebal is black
+	// The problem the path from toRep lost a black
+	// We are root
+	if(!par)
+		// 1 black node removed in all paths
+		return;
+	// sib is red
+	if(sib && sib->color)
+	{
+		// sib's children are black; rot sib to par
+		par->color = 1;
+		sib->color = 0;
+	}
+	// sib is black
+}
+
+/**
  * Deletes an element by key
  * Throws an error if the key is nonexistant
  * @param key Key of node to delete
@@ -342,49 +378,56 @@ template <typename K, typename D>
 D RBTree<K,D>::del(const K& key)
 {
 	// Get the node
-	Node* toDelete = this->clsNode(this->root, key);
-	if(!toDelete || toDelete->key != key)
+	Node* toDel = this->clsNode(this->root, key);
+	if(!toDel || toDel->key != key)
 		throw std::range_error("del received invalid key");
-	D r(toDelete->data);
-	Node* toReplace = 0x0; // Assume no children
+	D r(toDel->data);
 	// toDelete has two children
-	if(toDelete->lft && toDelete->rht)
+	if(toDel->lft && toDel->rht)
 	{
-		// Replacement is successor; no left children
-		toReplace = this->sucNode(toDelete);
-		// Update replace relationships
-		// These concern rgt of toDelete or par of toReplace
-		if(toReplace->par != toDelete)
-		{
-			if(toReplace->rht) // Fixing that
-				toReplace->rht->par = toReplace->par;
-			// No left children, so right child can sub in
-			toReplace->par->lft = toReplace->rht;
-			toReplace->rht = toDelete->rht;
-			toDelete->rht->par = toReplace;
-		}
-		// These always need to change
-		toReplace->par = toDelete->par;
-		toReplace->lft = toDelete->lft;
-		toDelete->lft->par = toReplace;
+		// Replacement is successor; we swap it with toDelete
+		Node* suc = this->sucNode(toDel);
+		// Parent
+		if(suc == suc->par->lft)
+			suc->par->lft = toDel;
+		else
+			suc->par->rht = toDel;
+		if(!toDel->par)
+			this->root = suc;
+		else if(toDel == toDel->par->lft)
+			toDel->par->lft = suc;
+		else
+			toDel->par->rht = suc;
+		Node* buf = suc->par;
+		suc->par = toDel->par; toDel->par = buf;
+		// Children
+		if(suc->lft) suc->lft->par = toDel;
+		if(suc->rht) suc->rht->par = toDel;
+		toDel->lft->par = suc;
+		toDel->rht->par = suc;
+		buf = suc->lft;
+		suc->lft = toDel->lft; toDel->lft = buf;
+		buf = suc->rht;
+		suc->rht = toDel->rht; toDel->rht = buf;
+		// Color
+		bool cBuf = suc->color;
+		suc->color = toDel->color;
+		toDel->color = cBuf;
 	}
-	// toDelete has one child
-	else if(toDelete->lft || toDelete->rht)
-	{
-		// Replacement is the child
-		toReplace = toDelete->lft ? toDelete->lft : toDelete->rht;
-		// Update replace relationships
-		toReplace->par = toDelete->par;
-	}
-	// Change toDelete parent relationships
-	if(toDelete == this->root)
-		this->root = toReplace;
-	else if(toDelete == toDelete->par->lft)
-		toDelete->par->lft = toReplace;
+	// Now toDelete has <= 1 children
+	Node* toRep = toDel->lft ? toDel->lft : toDel->rht;
+	// Update relationships
+	if(toRep)
+		toRep->par = toDel->par;
+	if(toDel == this->root)
+		this->root = toRep;
+	else if(toDel == toDel->par->lft)
+		toDel->par->lft = toRep;
 	else
-		toDelete->par->rht = toReplace;
-	// Delete and exit
-	delete toDelete;
+		toDel->par->rht = toRep;
+	// Repair, delete, and exit
+	this->delRepair(toDel, toRep);
+	delete toDel;
 	return r;
 }
 
@@ -546,7 +589,10 @@ std::ostream& RBTree<K,D>::printHelper(std::ostream& o, int depth, char* path, c
 	// Color red if red
 	if(this->root->color)
 		o << "\033[91m";
-        o << this->root->data << '[' << this->root->key << ']' << "\033[0m" << std::endl;
+        o << this->root->data << '[' << this->root->key << ']';
+	if(this->root->par)
+		o << '{' << this->root->par->key << '}';
+	o << "\033[0m" << std::endl;
         // Left child
         path[depth] = '0';
         RBTree(this->root->lft).printHelper(o, depth+1, path, '\\');

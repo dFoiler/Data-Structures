@@ -14,6 +14,7 @@ class RBTree
 		Node* rotLft(Node* root);
 		Node* rotRht(Node* root);
 		void insRepair(Node* nd);
+		void delRepair(Node* toDel, Node* toRep);
 		bool recursive;
 		std::ostream& printHelper(std::ostream& o, int depth, char* path, char child) const;
 	public:
