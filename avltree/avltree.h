@@ -22,6 +22,7 @@ class AVLTree
 		int size() const;
 		inline int depth() const;
 		int depth(const K& key) const;
+		bool is_avl() const;
 		bool ins(const K& key, const D& data);
 		D del(const K& key);
 		bool contains(const K& key) const;

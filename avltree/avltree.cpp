@@ -315,6 +315,27 @@ inline int AVLTree<K,D>::depth() const
 }
 
 /**
+ * Tests if the tree is AVL
+ * Throws std::invalid_argument if not
+ * @return Success
+ */
+template <typename K, typename D>
+bool AVLTree<K,D>::is_avl() const
+{
+	if(!this->root)
+		return 1;
+	// Compare balance factor
+	AVLTree<K,D> lTree = AVLTree(this->root->lft);
+	AVLTree<K,D> rTree = AVLTree(this->root->rht);
+	int bf = lTree.depth() - rTree.depth();
+	if(bf > -2 && bf < 2)
+		// Recurse
+		return lTree.is_avl() && rTree.is_avl();
+	// Balance factor problem?
+	throw std::invalid_argument("Not AVL tree");
+}
+
+/**
  * Inserts into the binary tree
  * @param key Key of the inserted node
  * @param data Data to be stored in the inserted node

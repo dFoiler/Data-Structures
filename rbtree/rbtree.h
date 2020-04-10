@@ -23,6 +23,7 @@ class RBTree
 		int size() const;
 		int depth() const;
 		int depth(const K& key) const;
+		int black_depth() const;
 		bool ins(const K& key, const D& data);
 		D del(const K& key);
 		bool contains(const K& key) const;

@@ -20,6 +20,7 @@ int main()
 		}
 		std::cout << "Tree : " << bintree << std::endl << std::endl;
 		toAdd = (toAdd * mult) % mod;
+		bintree.is_avl();
 	}
 	toAdd = initToAdd;
 	for(int i = 0; i < terms; ++i)
@@ -51,5 +52,6 @@ int main()
 		std::cout << bintree << std::endl;
 		std::cout << "Contains : " << bintree.contains(toAdd) << std::endl;
 		toAdd = (toAdd * mult*mult*mult) % mod;
+		bintree.is_avl();
 	}
 }

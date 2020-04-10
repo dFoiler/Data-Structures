@@ -12,6 +12,7 @@ int main()
 		std::cout << "Depth : " << bintree.depth(toAdd) << std::endl;
 		std::cout << "Tree : " << std::endl << bintree;
 		std::cout << "Depth : " << bintree.depth() << std::endl;
+		std::cout << "Black depth : " << bintree.black_depth() << std::endl;
 		std::cout << "Contains : " << bintree.contains(toAdd) << std::endl << std::endl;
 		toAdd = (toAdd * 37) % 100;
 	}
@@ -44,6 +45,7 @@ int main()
 		std::cout << bintree.del(toAdd) << std::endl;
 		std::cout << "Size : " << bintree.size() << std::endl;
 		std::cout << std::endl << bintree;
+		std::cout << "Black depth : " << bintree.black_depth() << std::endl;
 		std::cout << "Contains : " << bintree.contains(toAdd) << std::endl;
 		toAdd = (toAdd * 37*37*37) % 100;
 	}

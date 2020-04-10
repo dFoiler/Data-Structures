@@ -254,6 +254,23 @@ int RBTree<K,D>::depth() const
 }
 
 /**
+ * Returns the number of black nodes to get to a leaf
+ * Useful for checking red-blackness; throws error
+ * @return Number of black nodes to a leaf from root
+ */
+template <typename K, typename D>
+int RBTree<K,D>::black_depth() const
+{
+	if(!this->root)
+		return 0;
+	int hLft = RBTree(this->root->lft).black_depth();
+	int hRht = RBTree(this->root->rht).black_depth();
+	if(hLft != hRht)
+		throw std::invalid_argument("Not a red-black tree");
+	return hLft + !this->root->color;
+}
+
+/**
  * Insert helper method; repairs red-blackness
  * @param nd Node we just inserted
  */
@@ -339,7 +356,7 @@ bool RBTree<K,D>::ins(const K& key, const D& data)
  * @param toRep Node replacing toDel
  */
 template <typename K, typename D>
-void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
+void RBTree<K,D>::delRepair(Node* toRep, Node* toDel)
 {
 	// toDel is red => Just promote black child
 	if(toDel->color)
@@ -351,28 +368,24 @@ void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
 		toRep->color = 0; return;
 	}
 	// toDel is black; toRep is black => toRep is a leaf
-	Node* par = toDel->par;
+	Node* par = toDel->par, *sib;
 	// The problem the path from toRep lost a black
 	while(true)
 	{
 		// We are root: Everything is 1 less, so we're good
 		if(!par) return;
 		bool isLft = (par->lft == toRep);
-		Node* sib = isLft ? par->rht : par->lft;
+		sib = isLft ? par->rht : par->lft;
 		// sib is red
 		if(sib && sib->color)
 		{
 			// sib's children are black; rot sib to par
-			par->color = 1;
-			sib->color = 0;
+			par->color = 1; sib->color = 0;
 			if(isLft)
-			{
-				this->rotLft(par); sib = par->rht;
-			}
+				this->rotLft(par);
 			else
-			{
-				this->rotRht(par); sib = par->lft;
-			}
+				this->rotRht(par);
+			sib = isLft ? par->rht : par->lft;
 			// Now sib is black; keep going
 		}
 		// sib is black; 2 black children
@@ -384,7 +397,8 @@ void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
 				par->color = 0; return;
 			}
 			// par is black means we recurse
-			toRep = par; par = par->par; continue;
+			toRep = par; par = par->par;
+			continue;
 		}
 		// sib is black; inner child is red
 		if(isLft && sib->lft && sib->lft->color)
@@ -392,7 +406,7 @@ void RBTree<K,D>::delRepair(Node* toDel, Node* toRep)
 			sib->color = 1; sib->lft->color = 0;
 			sib = this->rotRht(sib);
 		}
-		if(!isLft && sib->rht && sib->rht->color)
+		else if(!isLft && sib->rht && sib->rht->color)
 		{
 			sib->color = 1; sib->rht->color = 0;
 			sib = this->rotLft(sib);
@@ -470,7 +484,7 @@ D RBTree<K,D>::del(const K& key)
 	else
 		toDel->par->rht = toRep;
 	// Repair, delete, and exit
-	this->delRepair(toDel, toRep);
+	this->delRepair(toRep, toDel);
 	delete toDel;
 	return r;
 }
