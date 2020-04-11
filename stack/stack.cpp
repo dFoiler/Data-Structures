@@ -1,5 +1,3 @@
-#include <iostream>
-
 /**
  * Fairly standard linked list node
  */

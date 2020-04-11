@@ -1,5 +1,6 @@
 #include <iostream>
 #include "heap.h"
+#include "heap.h"
 
 int main()
 {

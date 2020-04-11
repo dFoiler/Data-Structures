@@ -1,5 +1,6 @@
 #include <iostream>
 #include "avltree.h"
+#include "avltree.h"
 
 int main()
 {

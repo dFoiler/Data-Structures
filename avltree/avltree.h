@@ -1,3 +1,6 @@
+#ifndef AVLTREE_H
+#define AVLTREE_H
+
 #include <iostream>	// std::ostream&
 #include <stdexcept>	// std::range_error
 
@@ -39,3 +42,5 @@ class AVLTree
 };
 
 #include "avltree.cpp"
+
+#endif // AVLTREE_H

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "priorityqueue.h"
+#include "priorityqueue.h"
 
 int main()
 {

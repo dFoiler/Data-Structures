@@ -1,3 +1,6 @@
+#ifndef RBTREE_H
+#define RBTREE_H
+
 #include <iostream>	// std::ostream&
 #include <stdexcept>	// std::range_error
 
@@ -40,3 +43,5 @@ class RBTree
 };
 
 #include "rbtree.cpp"
+
+#endif // RBTREE_H

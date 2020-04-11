@@ -1,3 +1,6 @@
+#ifndef BINTREE_H
+#define BINTREE_H
+
 #include <iostream>	// std::ostream&
 #include <stdexcept>	// std::range_error
 
@@ -34,3 +37,5 @@ class BinTree
 };
 
 #include "bintree.cpp"
+
+#endif // BINTREE_H

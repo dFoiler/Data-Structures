@@ -1,12 +1,15 @@
-#include <iostream>
-#include <stdexcept>
+#ifndef STACK_H
+#define STACK_H
+
+#include <iostream>	// std::ostream&
+#include <stdexcept>	// std::range_error
 
 template <typename T>
 class Stack
 {
-	struct Node;
-
-	Node* pTop;
+	private:
+		struct Node;
+		Node* pTop;
 
 	public:
 		Stack();
@@ -21,3 +24,5 @@ class Stack
 };
 
 #include "stack.cpp"
+
+#endif // STACK_H

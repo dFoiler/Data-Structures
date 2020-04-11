@@ -1,5 +1,8 @@
-#include <iostream>
-#include <stdexcept>
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#include <iostream>	// std::ostream&
+#include <stdexcept>	// std::range_error
 
 template <typename T>
 class Queue
@@ -22,3 +25,5 @@ class Queue
 };
 
 #include "queue.cpp"
+
+#endif // QUEUE_H

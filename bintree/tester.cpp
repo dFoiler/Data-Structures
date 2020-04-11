@@ -1,5 +1,6 @@
 #include <iostream>
 #include "bintree.h"
+#include "bintree.h"
 
 int main()
 {

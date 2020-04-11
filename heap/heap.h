@@ -1,3 +1,6 @@
+#ifndef HEAP_H
+#define HEAP_H
+
 #include <iostream>	// std::ostream&
 #include <stdexcept>	// std::range_error
 
@@ -20,3 +23,5 @@ class Heap
 };
 
 #include "heap.cpp"
+
+#endif // HEAP_H

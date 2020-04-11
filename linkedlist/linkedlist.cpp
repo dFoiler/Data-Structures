@@ -1,14 +1,3 @@
-#ifndef IOSTREAM
-#define IOSTREAM
-#include <iostream>
-#endif
-
-#ifndef STRING
-#define STRING
-#include <string>
-#include <sstream>
-#endif
-
 /**
  * The internal node struct behind the linked list.
  * It acts like a struct, so that's what it's called.

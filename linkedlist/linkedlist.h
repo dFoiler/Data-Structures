@@ -1,14 +1,10 @@
-#ifndef IOSTREAM
-#define IOSTREAM
-#include <iostream>
-#include <stdexcept>
-#endif
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
 
-#ifndef STRING
-#define STRING
-#include <string>
-#include <sstream>
-#endif
+#include <iostream>	// std::ostream&
+#include <stdexcept>	// std::range_error
+#include <string>	// std::string
+#include <sstream>	// std::stringstream
 
 /**
  * Linked list class, with mostly standard methods.
@@ -77,3 +73,5 @@ class LinkedList
 };
 
 #include "linkedlist.cpp"
+
+#endif // LINKEDLIST_H

@@ -1,3 +1,6 @@
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
 #include <iostream>	// std::ostream
 #include <stdexcept>	// std::range_error
 #include <functional>	// std::hash from C++11
@@ -26,3 +29,5 @@ class HashTable
 };
 
 #include "hashtable.cpp"
+
+#endif // HASHTABLE_H

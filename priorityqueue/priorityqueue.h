@@ -1,5 +1,8 @@
-#include <iostream>
-#include <stdexcept>
+#ifndef PRIORITYQUEUE_H
+#define PRIORITYQUEUE_H
+
+#include <iostream>	// std::ostream&
+#include <stdexcept>	// std::range_error
 
 template <typename T>
 class PQueue
@@ -22,3 +25,5 @@ class PQueue
 };
 
 #include "priorityqueue.cpp"
+
+#endif // PRIORITYQUEUE_H

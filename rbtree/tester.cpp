@@ -1,5 +1,6 @@
 #include <iostream>
 #include "rbtree.h"
+#include "rbtree.h"
 
 int main()
 {
