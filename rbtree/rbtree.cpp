@@ -300,20 +300,18 @@ void RBTree<K,D>::insRepair(Node* nd)
 		// But now we have to recurse up with red
 		return this->insRepair(nd->par->par);
 	}
-	// Uncle is black---hard case
-	// We want par/nd pair to be on top so we can toggle par
-	// Left-right or right-left child problems
+	// Uncle is black
+	// Move nd/par pair on top so we can toggle par/sib
 	if(nd == nd->par->rht && nd->par == nd->par->par->lft)
 		nd = this->rotLft(nd->par)->lft;
 	else if(nd == nd->par->lft && nd->par == nd->par->par->rht)
 		nd = this->rotRht(nd->par)->rht;
-	// Rotate par on top
 	if(nd == nd->par->lft)
 		this->rotRht(nd->par->par);
 	else
 		this->rotLft(nd->par->par);
 	// Toggle colors; old gpar is now nd's sibling
-	nd->par->color = 0; this->sibling(nd)->color = 1;
+	nd->par->color = 0; this->sibling(nd)->color = 1;	
 }
 
 /**
@@ -359,34 +357,31 @@ template <typename K, typename D>
 void RBTree<K,D>::delRepair(Node* toRep, Node* toDel)
 {
 	// toDel is red => Just promote black child
-	if(toDel->color)
-		return;
+	if(toDel->color) return;
 	// toDel is black; toRep is red
 	if(toRep && toRep->color)
 	{
 		// Just paint child black; preserves path
 		toRep->color = 0; return;
 	}
-	// toDel is black; toRep is black => toRep is a leaf
+	// toDel is black; toRep is black
 	Node* par = toDel->par, *sib;
 	// The problem the path from toRep lost a black
 	while(true)
 	{
-		// We are root: Everything is 1 less, so we're good
+		// We are root: Everything is 1 less black-depth
 		if(!par) return;
 		bool isLft = (par->lft == toRep);
 		sib = isLft ? par->rht : par->lft;
-		// sib is red
+		// sib is red => rot a (black) child to be new sib
 		if(sib && sib->color)
 		{
-			// sib's children are black; rot sib to par
 			par->color = 1; sib->color = 0;
 			if(isLft)
 				this->rotLft(par);
 			else
 				this->rotRht(par);
 			sib = isLft ? par->rht : par->lft;
-			// Now sib is black; keep going
 		}
 		// sib is black; 2 black children
 		if(!(sib->lft&&sib->lft->color) && !(sib->rht&&sib->rht->color))
@@ -648,8 +643,6 @@ std::ostream& RBTree<K,D>::printHelper(std::ostream& o, int depth, char* path, c
 	if(this->root->color)
 		o << "\033[91m";
         o << this->root->data << '[' << this->root->key << ']';
-	if(this->root->par)
-		o << '{' << this->root->par->key << '}';
 	o << "\033[0m" << std::endl;
         // Left child
         path[depth] = '0';
