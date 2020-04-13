@@ -24,22 +24,24 @@ struct Trie<K,D>::Node
  * @param numLets Length of alphabet
  */
 template <typename K, typename D>
-Trie<K,D>::Trie(const K* lets, const int& numLets)
+Trie<K,D>::Trie(const K* lets, const int numLets)
 {
 	this->lets = new K[numLets];
 	for(int i = 0; i < numLets; ++i)
 		this->lets[i] = lets[i];
 	this->numLets = numLets;
-	this->root = new Node(numLets, 0x0);
+	this->root = 0x0;
 	this->recursive = 0;
 }
 
 /**
  * Initializes root as root; declared as recursive
  * @param root Root of this trie
+ * @param lets Alphabet of this tree
+ * #param numLets Length of alphabet
  */
 template <typename K, typename D>
-Trie<K,D>::Trie(Node* root, const K* lets, const int& numLets)
+Trie<K,D>::Trie(Node* root, const K* lets, const int numLets)
 {
 	this->lets = new K[numLets];
 	for(int i = 0; i < numLets; ++i)
@@ -90,22 +92,16 @@ int Trie<K,D>::index(const K& let) const
 /**
  * Returns the node closest to the given key
  * @param root Root to start searching from
- * 
+ * @return Correct node if it exists; else 0x0
  */
 template <typename K, typename D>
-typename Trie<K,D>::Node* Trie<K,D>::clsNode(const K* key, const int& keyLen) const
+typename Trie<K,D>::Node* Trie<K,D>::clsNode(const K* key, const int keyLen) const
 {
-	// No tree to search through?
-	if(!this->root)
-		return 0x0;
-	Node* par = 0x0;
-	Node* chd = this->root;
-	for(int i = 1; i < keyLen && chd; ++i)
-	{
-		par = chd;
-		chd = par->chds[this->index(key[i])];
-	}
-	return par;
+	// Run DFS on all branches
+	Node* r = this->root;
+	for(int i = 0; i < keyLen && r; ++i)
+		r = r->chdn[this->index(key[i])];
+	return r;
 }
 
 /**
@@ -136,11 +132,14 @@ int Trie<K,D>::depth() const
  * @param key Pointer to the key array
  * @param keyLen Length of the key array
  * @param data Data to place at key
- * @return If the node was inserted
+ * @return If the node was inserted (vs. set)
  */
 template <typename K, typename D>
-bool Trie<K,D>::ins(const K* key, const int& keyLen, const D& data)
+bool Trie<K,D>::ins(const K* key, const int keyLen, const D& data)
 {
+	// Initialize the tree if necessary
+	if(!this->root)
+		this->root = new Node(this->numLets, 0x0);
 	Node* par = 0x0;
 	Node* chd = this->root;
 	// Work down key until we have to start inserting
@@ -153,23 +152,136 @@ bool Trie<K,D>::ins(const K* key, const int& keyLen, const D& data)
 	// We found it!
 	if(chd)
 	{
+		// Attempt to insert here
+		if(chd->used)
+			return 0;
 		chd->used = 1;
 		chd->data = data;
-		return 0;
+		return 1;
 	}
 	// Start inserting nodes one back
 	for(--i; i < keyLen; ++i)
 	{
+		std::cout << key[i];
 		// Make the node and iterate down
 		par = (par->chdn[this->index(key[i])]
 			= new Node(this->numLets, par));
 	}
+	std::cout << std::endl;
 	// Now par is sitting at key
 	par->used = 1;
 	par->data = data;
 	return 1;
 }
 
+template <typename K, typename D>
+D Trie<K,D>::del(const K* key, const int keyLen)
+{
+	// We manually do a recursive search
+	Node* nds[keyLen+1];
+	int ids[keyLen+1];
+	nds[0] = this->root;
+	for(int i = 0; i < keyLen; ++i)
+	{
+		if(i < keyLen)
+			ids[i] = this->index(key[i]);
+		nds[i+1] = nds[i]->chdn[ids[i]];
+		// Null?
+		if(!nds[i+1])
+			throw std::range_error("del received invalid key");
+	}
+	if(!nds[keyLen]->used)
+		throw std::range_error("del recieved invalid key");
+	// Are we deleting a branch?
+	int cur = keyLen;
+	bool needed = 0;
+	for(int i = 0; i < this->numLets && !needed; ++i)
+		if(nds[cur]->chdn[i])
+			needed = 1;
+	// There's something below---set to unused and exit
+	if(needed)
+	{
+		nds[cur]->used = 0;
+		return nds[cur]->data;
+	}
+	D r(nds[cur]->data);
+	// Nothing below---work upwards until we can't
+	while(!needed && cur)
+	{
+		// Delete and cut off
+		delete nds[cur];
+		if(cur > 0)
+			nds[cur-1]->chdn[ids[cur-1]] = 0x0;
+		else
+			break;
+		--cur;
+		// Do we need this node?
+		needed = nds[cur]->used;
+		for(int i = 0; i < this->numLets && !needed; ++i)
+			if(nds[cur]->chdn[i])
+				needed = 1;
+		// Go up if there is
+	}
+	return r;
+}
+
+/**
+ * Standard contains method
+ * @param key Key array to test
+ * @param keyLen Length of key array
+ * @return True iff the key is present
+ */
+template <typename K, typename D>
+inline bool Trie<K,D>::contains(const K* key, const int keyLen) const
+{
+	// clsNode will return 0x0 if the node is not found
+	Node* nd = this->clsNode(key, keyLen);
+	return nd && nd->used;
+}
+
+/**
+ * Standard get at index for a tree
+ * Throws std::range_error if key is not present
+ * @param key Key array to get
+ * @param keyLen Length of key array
+ * @return Data stored at key, by reference
+ */
+template <typename K, typename D>
+inline D& Trie<K,D>::get(const K* key, const int keyLen) const
+{
+	// clsNode will return 0x0 if the node is not found
+	Node* nd = this->clsNode(key, keyLen);
+	if(!nd || !nd->used)
+		throw std::range_error("get received invalid key");
+	return nd->data;
+}
+
+/**
+ * Standard set at index for a tree
+ * Throws std::range_error if key is not present
+ * @param key Key array to set
+ * @param keyLen Length of key array
+ * @param data Data to set key to
+ */
+template <typename K, typename D>
+inline void Trie<K,D>::set(const K* key, const int keyLen, const D& data)
+{
+	// We could set unused nodes, but it doesn't feel like set
+	Node* nd = this->clsNode(key, keyLen);
+	if(!nd || !nd->used)
+		throw std::range_error("set received invalid key");
+	nd->data = data;
+}
+
+/**
+ * Helper function for << operator
+ * Uses DFS to print recursively
+ * @param o Output stream to attach to
+ * @param root Root of the printed tree
+ * @param key Key used to get to this point
+ * @param keyLen Length of key
+ * @return New output stream
+ */
 template <typename K, typename D>
 std::ostream& Trie<K,D>::printHelper(std::ostream& o, Node* root, K* key, int keyLen) const
 {
@@ -178,9 +290,9 @@ std::ostream& Trie<K,D>::printHelper(std::ostream& o, Node* root, K* key, int ke
 		return o;
 	// Print root
 	for(int i = 0; i < keyLen; ++i)
-		o << '|' << '\t';
+		o << '\t';
 	if(root->used)
-		o << this->root->data;
+		o << root->data;
 	o << '[';
 	for(int i = 0; i < keyLen; ++i)
 		o << key[i];
@@ -195,6 +307,12 @@ std::ostream& Trie<K,D>::printHelper(std::ostream& o, Node* root, K* key, int ke
 	return o;
 }
 
+/**
+ * Abbreviated tree output; calls printHelper
+ * @param o Output stream to attach to
+ * @param t Trie to print
+ * @return New output stream
+ */
 template <typename K, typename D>
 std::ostream& operator<<(std::ostream& o, const Trie<K,D>& t)
 {
