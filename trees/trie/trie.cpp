@@ -162,7 +162,6 @@ bool Trie<K,D>::ins(const K* key, const int keyLen, const D& data)
 	// Start inserting nodes one back
 	for(--i; i < keyLen; ++i)
 	{
-		std::cout << key[i];
 		// Make the node and iterate down
 		par = (par->chdn[this->index(key[i])]
 			= new Node(this->numLets, par));
