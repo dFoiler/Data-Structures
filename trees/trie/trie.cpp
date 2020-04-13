@@ -5,12 +5,10 @@
 template <typename K, typename D>
 struct Trie<K,D>::Node
 {
-	Node* par;
 	Node** chdn;
 	D data;
 	bool used;
-	inline Node(int numLets, Node* par) :
-		par(par), used(0)
+	inline Node(int numLets, Node* par) : used(0)
 	{
 		chdn = new Node*[numLets];
 		for(int i = 0; i < numLets; ++i)
