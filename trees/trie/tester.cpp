@@ -42,6 +42,10 @@ int main()
 		std::cout << "t.del(\"" << sample << "\"," << i << ") : " << t.del(sample,i) << std::endl;
 		std::cout << "Trie : " << std::endl << t << std::endl;
 	}
+	std::cout << "t.del(\"ef\",2) : " << t.del("ef",2) << std::endl;
+	std::cout << "Trie : " << std::endl << t << std::endl;
+	std::cout << "t.del(\"ef\",1) : " << t.del("ef",1) << std::endl;
+	std::cout << "Trie : " << std::endl << t << std::endl;
 	// Try setting root for the fun of it
 	t.set("",0,-1);
 	return 0;

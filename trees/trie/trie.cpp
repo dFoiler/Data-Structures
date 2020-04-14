@@ -10,6 +10,7 @@ struct Trie<K,D>::Node
 	bool used;
 	inline Node(int numLets, Node* par) : used(0)
 	{
+		// Notably, we don't set data
 		chdn = new Node*[numLets];
 		for(int i = 0; i < numLets; ++i)
 			chdn[i] = 0x0;
@@ -68,7 +69,7 @@ Trie<K,D>::~Trie()
 		chd.recursive = 0;
 	}
 	// Delete and exit
-	delete this->root->chdn;
+	delete[] this->root->chdn;
 	delete this->root;
 }
 
@@ -81,6 +82,8 @@ Trie<K,D>::~Trie()
 template <typename K, typename D>
 int Trie<K,D>::index(const K& let) const
 {
+	// Just do a linear search through
+	// A hashtable + binary search could make this log
 	for(int i = 0; i < numLets; ++i)
 		if(this->lets[i] == let)
 			return i;
@@ -113,13 +116,14 @@ int Trie<K,D>::depth() const
 	if(!this->root)
 		return -1;
 	// Find max depth among children
-	int r = -1;
+	int r = -1, d;
 	for(int i = 0; i < this->numLets; ++i)
 	{
 		// Recursive call
-		int d = Trie(this->root->chdn[i],
+		d = Trie(this->root->chdn[i],
 			this->lets, this->numLets).depth();
-		r = r > d ? r : d;
+		if(d > r)
+			r = d;
 	}
 	// Return one more, for root
 	return r+1;
@@ -164,13 +168,19 @@ bool Trie<K,D>::ins(const K* key, const int keyLen, const D& data)
 		par = (par->chdn[this->index(key[i])]
 			= new Node(this->numLets, par));
 	}
-	std::cout << std::endl;
 	// Now par is sitting at key
 	par->used = 1;
 	par->data = data;
 	return 1;
 }
 
+/**
+ * Deletes node at key and everything below, if possible
+ * Throws error if key does not point to a used node
+ * @param key Pointer to the key array
+ * @param keyLen Length of the key array
+ * @return Data stored at key
+ */
 template <typename K, typename D>
 D Trie<K,D>::del(const K* key, const int keyLen)
 {
@@ -217,7 +227,7 @@ D Trie<K,D>::del(const K* key, const int keyLen)
 		for(int i = 0; i < this->numLets && !needed; ++i)
 			if(nds[cur]->chdn[i])
 				needed = 1;
-		// Go up if there is
+		// Go up if there is no need
 	}
 	return r;
 }
