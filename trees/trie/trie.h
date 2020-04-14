@@ -20,12 +20,15 @@ class Trie
 	public:
 		Trie(const K* lets, const int numLets);
 		~Trie();
+		int size() const;
 		int depth() const;
 		bool ins(const K* key, const int keyLen, const D& data);
 		D del(const K* key, const int keyLen);
 		inline bool contains(const K* key, const int keyLen) const;
 		inline D& get(const K* key, const int keyLen) const;
 		inline void set(const K* key, const int keyLen, const D& data);
+		int max(K* key, const int keyLen) const;
+		int min(K* key, const int keyLen) const;
 	
 	template <typename KK, typename DD>
 	friend std::ostream& operator<<(std::ostream& o, const Trie<KK,DD>& t);

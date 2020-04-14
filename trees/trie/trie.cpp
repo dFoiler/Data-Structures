@@ -8,7 +8,7 @@ struct Trie<K,D>::Node
 	Node** chdn;
 	D data;
 	bool used;
-	inline Node(int numLets, Node* par) : used(0)
+	inline Node(int numLets) : used(0)
 	{
 		// Notably, we don't set data
 		chdn = new Node*[numLets];
@@ -106,6 +106,23 @@ typename Trie<K,D>::Node* Trie<K,D>::clsNode(const K* key, const int keyLen) con
 }
 
 /**
+ * Returns the number of used nodes
+ * @return Number of used nodes
+ */
+template <typename K, typename D>
+int Trie<K,D>::size() const
+{
+	if(!this->root)
+		return 0;
+	// Run DFS search on all children
+	int r = this->root->used;
+	for(int i = 0; i < this->numLets; ++i)
+		r += Trie(this->root->chdn[i],
+			this->lets, this->numLets).size();
+	return r;
+}
+
+/**
  * Returns zero-indexed maximum depth
  * @return Zero-indexed depth of trie
  */
@@ -141,7 +158,7 @@ bool Trie<K,D>::ins(const K* key, const int keyLen, const D& data)
 {
 	// Initialize the tree if necessary
 	if(!this->root)
-		this->root = new Node(this->numLets, 0x0);
+		this->root = new Node(this->numLets);
 	Node* par = 0x0;
 	Node* chd = this->root;
 	// Work down key until we have to start inserting
@@ -166,7 +183,7 @@ bool Trie<K,D>::ins(const K* key, const int keyLen, const D& data)
 	{
 		// Make the node and iterate down
 		par = (par->chdn[this->index(key[i])]
-			= new Node(this->numLets, par));
+			= new Node(this->numLets));
 	}
 	// Now par is sitting at key
 	par->used = 1;
@@ -278,6 +295,74 @@ inline void Trie<K,D>::set(const K* key, const int keyLen, const D& data)
 	if(!nd || !nd->used)
 		throw std::range_error("set received invalid key");
 	nd->data = data;
+}
+
+/**
+ * Fills array with minimum existing key path
+ * Looks for minimum key in each node until node is used
+ * @param key Key array to store
+ * @param keyLen Length of key array
+ * @return Length of key array filled
+ */
+template <typename K, typename D>
+int Trie<K,D>::min(K* key, const int keyLen) const
+{
+	// Work through the array until we find a used node
+	Node* cur = this->root;
+	if(!cur)
+		return 0;
+	bool go = 0; int k = 0;
+	for(; k < keyLen && !cur->used; ++k)
+	{
+		go = 1;
+		// Linear search for available key
+		for(int i = 0; i < this->numLets && go; ++i)
+			if(cur->chdn[i])
+			{
+				key[k] = this->lets[i];
+				cur = cur->chdn[i];
+				go = 0;
+			}
+		// We hit the end of the path
+		if(go)
+			return k+1;
+	}
+	// Return how much we filled
+	return k;
+}
+
+/**
+ * Fills array with maximum existing key path
+ * Looks for minimum key in each node until node is used
+ * @param key Key array to store
+ * @param keyLen Lenth of key array
+ * @return Length of the key array
+ */
+template <typename K, typename D>
+int Trie<K,D>::max(K* key, const int keyLen) const
+{
+	// Work through the array until we hit a leaf
+	Node* cur = this->root;
+	if(!cur)
+		return 0;
+	int k = 0; bool found = 1;
+	for(; k < keyLen && found; ++k)
+	{
+		found = 0;
+		// Linear search for last available key
+		for(int i = this->numLets-1; i >= 0 && !found; --i)
+			if(cur->chdn[i])
+			{
+				key[k] = this->lets[i];
+				cur = cur->chdn[i];
+				found = 1;
+			}
+		// We finished
+		if(!found)
+			return k;
+	}
+	// We didn't finish
+	return keyLen;
 }
 
 /**
